@@ -2,8 +2,7 @@
 <openerp>
     <data noupdate="True">
         <record model='decimal.precision' id='product.decimal_account'>
-            <field name='name'>Tax</field>
-            <field name='digits'>3</field>
+            <field name='digits' eval="3"/>
         </record>
     </data>
 </openerp>
