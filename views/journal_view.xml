@@ -7,6 +7,8 @@
             <field name="inherit_id" ref="account.view_account_journal_search"/>
             <field name="arch" type="xml">
                 <field name="name" position="after">
+                    <field name="sii_code" />
+                    <field name="sucursal_id" />
                     <field name="point_of_sale_id"/>
                 </field>
             </field>
@@ -18,6 +20,8 @@
             <field name="inherit_id" ref="account.view_account_journal_form"/>
             <field name="arch" type="xml">
                 <field name="type" position="after">
+                    <field name="sucursal_id" />
+                    <field name="sii_code" />
                     <field name="use_documents" attrs="{'invisible': [('type','not in',['purchase','sale','purchase_refund','sale_refund','general'])]}"/>
                 </field>
 

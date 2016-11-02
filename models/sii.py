@@ -2,7 +2,16 @@
 from openerp import fields, models, api, _
 from openerp.exceptions import Warning
 
+class SIISucursal(models.Model):
+    _name = 'sii.sucursal'
 
+    name = fields.Char(string='Nombre de la Sucursal', required=True)
+    sii_code = fields.Char(string="Código SII de la Sucursal", )
+    company_id = fields.Many2one(
+        'res.company', 'Company', required=True,
+        default=lambda self: self.env['res.company']._company_default_get(
+            'sii.point_of_sale'),)
+    
 class sii_point_of_sale(models.Model):
     _name = 'sii.point_of_sale'
     _description = 'SII Point Of Sale'

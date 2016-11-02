@@ -221,12 +221,14 @@ class account_journal_sii_document_class(models.Model):
 class account_journal(models.Model):
     _inherit = "account.journal"
 
-    #_columns = {
-    #    'point_of_sale': fields.related(
-    #        'point_of_sale_id', 'number', type='integer',
-    #        string='Point of sale', readonly=True),  # for compatibility
-    #}
+    sucursal_id = new_fields.Many2one(
+        'sii.sucursal',
+        string="Sucursal")
 
+    sii_code = new_fields.Char(
+        related='sucursal_id.name',
+        string="Código SII Sucursal",
+        readonly=True)
 
     journal_document_class_ids = new_fields.One2many(
             'account.journal.sii_document_class', 'journal_id',
