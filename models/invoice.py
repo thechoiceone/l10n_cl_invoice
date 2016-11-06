@@ -141,7 +141,7 @@ class account_invoice(models.Model):
             if rec.company_id:
                 available_turn_ids = rec.company_id.company_activities_ids
                 for turn in available_turn_ids:
-                    rec.turn_issuer = turn
+                    rec.turn_issuer= turn.id
 
     @api.multi
     def name_get(self):
@@ -168,6 +168,12 @@ class account_invoice(models.Model):
             recs = self.search([('name', operator, name)] + args, limit=limit)
         return recs.name_get()
 
+    @api.onchange('company_id')
+    def _refreshJournal(self):
+        if self.journal_id and self.journal_id.company_id != self.company_id.id:
+            self.journal_id = False
+
+
     @api.onchange('journal_id', 'partner_id', 'turn_issuer','invoice_turn')
     def _get_available_journal_document_class(self, default=None):
         for inv in self:
@@ -183,14 +189,12 @@ class account_invoice(models.Model):
 
                 if inv.use_documents:
                     letter_ids = inv.get_valid_document_letters(
-                        inv.partner_id.id, operation_type, inv.company_id.id,
+                        inv.partner_id.id, operation_type, inv.company_id,
                         inv.turn_issuer.vat_affected, invoice_type)
-
                     domain = [
                         ('journal_id', '=', inv.journal_id.id),
-                        '|', ('sii_document_class_id.document_letter_id',
-                              'in', letter_ids),
-                             ('sii_document_class_id.document_letter_id', '=', False)]
+                        ('sii_document_class_id.document_letter_id','in', letter_ids.ids),
+                         ]
 
                     # If document_type in context we try to serch specific document
                     # document_type = self._context.get('document_type', False)
@@ -213,7 +217,6 @@ class account_invoice(models.Model):
                     document_classes = self.env[
                         'account.journal.sii_document_class'].search(domain)
                     document_class_ids = document_classes.ids
-
                     # If not specific document type found, we choose another one
                     if not document_class_id and document_class_ids:
                         # revisar si hay condicion de exento, para poner como primera alternativa estos
@@ -230,6 +233,8 @@ class account_invoice(models.Model):
                         if dc.sii_document_class_id.id == default:
                             document_class_id = dc.id
                 inv.journal_document_class_id = document_class_id
+            else:
+                inv.journal_document_class_id = False
 
     @api.onchange('sii_document_class_id')
     def _check_vat(self):
@@ -405,25 +410,17 @@ a VAT."""))
         return operation_type
 
     def get_valid_document_letters(
-            self, cr, uid, partner_id, operation_type='sale',
-            company_id=False, vat_affected='SI', invoice_type='out_invoice', context=None):
-        if context is None:
-            context = {}
+            self, partner_id, operation_type='sale',
+            company=False, vat_affected='SI', invoice_type='out_invoice'):
 
-        document_letter_obj = self.pool.get('sii.document_letter')
-        user = self.pool.get('res.users').browse(cr, uid, uid, context=context)
-        partner = self.pool.get('res.partner').browse(
-            cr, uid, partner_id, context=context)
+        document_letter_obj = self.env['sii.document_letter']
+        user = self.env.user
+        partner = self.partner_id
 
-        if not partner_id or not company_id or not operation_type:
+        if not partner_id or not company or not operation_type:
             return []
 
         partner = partner.commercial_partner_id
-
-        if not company_id:
-            company_id = context.get('company_id', user.company_id.id)
-        company = self.pool.get('res.company').browse(
-            cr, uid, company_id, context)
 
         if operation_type == 'sale':
             issuer_responsability_id = company.partner_id.responsability_id.id
@@ -449,9 +446,8 @@ a VAT."""))
             receptor_responsability_id = company.partner_id.responsability_id.id
             if invoice_type == 'in_invoice':
                 print('responsabilidad del partner')
-                if issuer_responsability_id == self.pool.get(
-                        'ir.model.data').get_object_reference(
-                        cr, uid, 'l10n_cl_invoice', 'res_BH')[1]:
+                if issuer_responsability_id == self.env['ir.model.data'].get_object_reference(
+                         'l10n_cl_invoice', 'res_BH')[1]:
                     print('el proveedor es de segunda categoria y emite boleta de honorarios')
                 else:
                     print('el proveedor es de primera categoria y emite facturas o facturas no afectas')
@@ -474,7 +470,7 @@ a VAT."""))
         #      partner before to continue.'))
 
         document_letter_ids = document_letter_obj.search(
-            cr, uid, domain, context=context)
+             domain)
         return document_letter_ids
 
     @api.multi
