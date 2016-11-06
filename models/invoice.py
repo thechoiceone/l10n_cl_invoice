@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from openerp import osv, models, fields, api, _
 from openerp.osv import fields as old_fields
-from openerp.exceptions import except_orm, Warning
+from openerp.exceptions import except_orm, UserError
 import openerp.addons.decimal_precision as dp
 # from inspect import currentframe, getframeinfo
 # estas 2 lineas son para imprimir el numero de linea del script
@@ -226,7 +226,7 @@ class account_invoice(models.Model):
             self.env.ref('l10n_cl_invoice.dc_bzf_f_dtn').id,
             self.env.ref('l10n_cl_invoice.dc_b_f_dtm').id]
         if self.sii_document_class_id not in boleta_ids and self.partner_id.document_number == '' or self.partner_id.document_number == '0':
-            raise Warning(_("""The customer/supplier does not have a VAT \
+            raise UserError(_("""The customer/supplier does not have a VAT \
 defined. The type of invoicing document you selected requires you tu settle \
 a VAT."""))
 
@@ -347,7 +347,7 @@ a VAT."""))
                       ('id', '!=', self.id)]
             invoice_ids = self.search(domain)
             if invoice_ids:
-                raise Warning(
+                raise UserError(
                     _('Supplier Invoice Number must be unique per Supplier and Company!'))
 
     _sql_constraints = [
@@ -465,6 +465,24 @@ a VAT."""))
         document_letter_ids = document_letter_obj.search(
             cr, uid, domain, context=context)
         return document_letter_ids
+
+    @api.multi
+    def invoice_validate(self):
+        for invoice in self:
+            #refuse to validate a vendor bill/refund if there already exists one with the same reference for the same partner,
+            #because it's probably a double encoding of the same bill/refund
+            if invoice.type in ('in_invoice', 'in_refund') and invoice.reference:
+                if self.search(
+                    [
+                        ('reference','=', invoice.reference),
+                        ('journal_document_class_id','=',invoice.journal_document_class_id.id),
+                        ('partner_id','=', invoice.partner_id.id),
+                        ('type', '=', invoice.type),
+                        ('id', '!=', invoice.id),
+                     ]):
+                    raise UserError('El documento %s, Folio %s de la Empresa %s ya se en cuentra registrado' % ( invoice.journal_document_class_id.sii_document_class_id.name, invoice.reference, invoice.partner_id.name))
+        return self.write({'state': 'open'})
+
 
 class Referencias(models.Model):
     _name = 'account.invoice.referencias'
