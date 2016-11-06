@@ -39,39 +39,50 @@ class AccountInvoiceLine(models.Model):
 class AccountInvoiceTax(models.Model):
     _inherit = "account.invoice.tax"
 
-    def _compute_base_amount(self):
+    def _getNeto(self):
+        neto = 0
         for tax in self:
-            if tax.tax_id.price_include:
-                base = 0.0
-                for line in tax.invoice_id.invoice_line_ids:
-                    if tax.tax_id in line.invoice_line_tax_ids:
-                        neto = round(line.price_tax_included / (1 + tax.tax_id.amount / 100))
-                        iva_round =  round(neto * ( tax.tax_id.amount / 100))
-                        if round(neto+iva_round) != round(line.price_tax_included):
-                            neto = int(line.price_tax_included / (1 + tax.tax_id.amount / 100))
-                        base += neto
-                        base += sum((line.invoice_line_tax_ids.filtered(lambda t: t.include_base_amount) - tax.tax_id).mapped('amount'))
-                tax.base = tax.invoice_id.currency_id.round(base)# se redondea global
-            else:
-                super(AccountInvoiceTax,tax)._compute_base_amount()
+            base = tax.base
+            amount_tax = sum(tax.amount)
+            for line in tax.invoice_id.invoice_line_ids:
+                if tax.tax_id in line.invoice_line_tax_ids and tax.tax_id.price_include:
+                    price_tax_included += line.price_tax_included
+            if price_tax_included > 0:
+                base = round(price_tax_included / ( 1 + tax.tax_id.amount / 100))
+                iva_round =  round(base * ( tax.tax_id.amount / 100))
+                if round(base + iva_round) != round(price_tax_included):
+                    base = int(price_tax_included / (1 + tax.tax_id.amount / 100))
+            neto += base
+        return neto
+
+    def _compute_base_amount(self):
+        included = False
+        for tax in self:
+            if ta.tax_id.price_include:
+                included = True
+        if included:
+            neto = self._getNeto()
+            tax.base = neto
+        else:
+            super(AccountInvoiceTax, self)._compute_base_amount()
 
 class account_invoice(models.Model):
     _inherit = "account.invoice"
 
     def _compute_amount(self):
         for inv in self:
-            currency = inv.currency_id or None
-            amount_total = 0
-            for line in inv.invoice_line_ids:
-                taxes = line.invoice_line_tax_ids.with_context({'round':False}).compute_all(line.price_unit, currency, line.quantity, product=line.product_id, partner=inv.partner_id, discount=line.discount)
-                if taxes and taxes['total_included'] > 0:
-                    amount_total += taxes['total_included']
-                else:
-                    amount_total += line.price_tax_included
-
-            inv.amount_tax = sum(line.amount for line in inv.tax_line_ids)
-            bases = sum(line.price_subtotal for line in inv.invoice_line_ids)
-            inv.amount_untaxed = bases
+            amount_tax = 0
+            included = False
+            for tax in inv.tax_line_ids:
+                if tax.tax_id.price_include:
+                    included = True
+                amount_tax += tax.amount
+            if included:
+                neto = inv.tax_line_ids._getNeto(inv.tax_line_ids)
+            else:
+                neto = sum(line.price_subtotal for line in inv.invoice_line_ids)
+            inv.amount_untaxed = neto
+            inv.amount_tax = amount_tax
             inv.amount_total = inv.amount_untaxed + inv.amount_tax
             amount_total_company_signed = inv.amount_total
             amount_untaxed_signed = inv.amount_untaxed
