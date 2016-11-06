@@ -9,9 +9,9 @@ class SIISucursal(models.Model):
     sii_code = fields.Char(string="Código SII de la Sucursal", )
     company_id = fields.Many2one(
         'res.company', 'Company', required=True,
-        default=lambda self: self.env['res.company']._company_default_get(
-            'sii.point_of_sale'),)
-    
+        default=lambda self: self.env.user.company_id.id,
+        )
+
 class sii_point_of_sale(models.Model):
     _name = 'sii.point_of_sale'
     _description = 'SII Point Of Sale'
@@ -32,8 +32,8 @@ class sii_point_of_sale(models.Model):
         'Code', compute="_get_code")
     company_id = fields.Many2one(
         'res.company', 'Company', required=True,
-        default=lambda self: self.env['res.company']._company_default_get(
-            'sii.point_of_sale'),)
+        default=lambda self: self.env.user.company_id.id,
+        )
 
     _sql_constraints = [('number_unique', 'unique(number, company_id)',
                          'Number Must be Unique per Company!'), ]
