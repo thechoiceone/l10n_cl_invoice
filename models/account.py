@@ -112,10 +112,7 @@ class SiiTaxCode(models.Model):
 
     def _compute_amount(self, base_amount, price_unit, quantity=1.0, product=None, partner=None):
         if self.amount_type == 'percent' and self.price_include:
-            neto = round(base_amount / (1 + self.amount / 100))
-            iva_round =  round(neto * ( self.amount / 100))
-            if round(neto+iva_round) != round(base_amount):
-                neto = int(base_amount / (1 + self.amount / 100))
+            neto = base_amount / (1 + self.amount / 100)
             iva = base_amount - neto
             return iva
         return super(SiiTaxCode,self)._compute_amount(base_amount, price_unit, quantity, product, partner)
