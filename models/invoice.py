@@ -58,7 +58,7 @@ class AccountInvoiceTax(models.Model):
     def _compute_base_amount(self):
         included = False
         for tax in self:
-            if ta.tax_id.price_include:
+            if tax.tax_id.price_include:
                 included = True
         if included:
             neto = self._getNeto()
@@ -191,37 +191,38 @@ class account_invoice(models.Model):
                     letter_ids = inv.get_valid_document_letters(
                         inv.partner_id.id, operation_type, inv.company_id,
                         inv.turn_issuer.vat_affected, invoice_type)
-                    domain = [
-                        ('journal_id', '=', inv.journal_id.id),
-                        ('sii_document_class_id.document_letter_id','in', letter_ids.ids),
-                         ]
+                    if letter_ids:
+                        domain = [
+                            ('journal_id', '=', inv.journal_id.id),
+                            ('sii_document_class_id.document_letter_id','in', letter_ids.ids),
+                             ]
 
-                    # If document_type in context we try to serch specific document
-                    # document_type = self._context.get('document_type', False)
-                    # en este punto document_type siempre es falso.
-                    # TODO: revisar esta opcion
-                    #document_type = self._context.get('document_type', False)
-                    #if document_type:
-                    #    document_classes = self.env[
-                    #        'account.journal.sii_document_class'].search(
-                    #        domain + [('sii_document_class_id.document_type', '=', document_type)])
-                    #    if document_classes.ids:
-                    #        # revisar si hay condicion de exento, para poner como primera alternativa estos
-                    #        document_class_id = self.get_document_class_default(document_classes)
-                    if invoice_type  in [ 'in_refund', 'out_refund']:
-                        domain += [('sii_document_class_id.document_type','in',['debit_note','credit_note'] )]
-                    else:
-                        domain += [('sii_document_class_id.document_type','in',['invoice','invoice_in'] )]
+                        # If document_type in context we try to serch specific document
+                        # document_type = self._context.get('document_type', False)
+                        # en este punto document_type siempre es falso.
+                        # TODO: revisar esta opcion
+                        #document_type = self._context.get('document_type', False)
+                        #if document_type:
+                        #    document_classes = self.env[
+                        #        'account.journal.sii_document_class'].search(
+                        #        domain + [('sii_document_class_id.document_type', '=', document_type)])
+                        #    if document_classes.ids:
+                        #        # revisar si hay condicion de exento, para poner como primera alternativa estos
+                        #        document_class_id = self.get_document_class_default(document_classes)
+                        if invoice_type  in [ 'in_refund', 'out_refund']:
+                            domain += [('sii_document_class_id.document_type','in',['debit_note','credit_note'] )]
+                        else:
+                            domain += [('sii_document_class_id.document_type','in',['invoice','invoice_in'] )]
 
-                    # For domain, we search all documents
-                    document_classes = self.env[
-                        'account.journal.sii_document_class'].search(domain)
-                    document_class_ids = document_classes.ids
-                    # If not specific document type found, we choose another one
-                    if not document_class_id and document_class_ids:
-                        # revisar si hay condicion de exento, para poner como primera alternativa estos
-                        # to-do: manejar más fino el documento por defecto.
-                        document_class_id = inv.get_document_class_default(document_classes)
+                        # For domain, we search all documents
+                        document_classes = self.env[
+                            'account.journal.sii_document_class'].search(domain)
+                        document_class_ids = document_classes.ids
+                        # If not specific document type found, we choose another one
+                        if not document_class_id and document_class_ids:
+                            # revisar si hay condicion de exento, para poner como primera alternativa estos
+                            # to-do: manejar más fino el documento por defecto.
+                            document_class_id = inv.get_document_class_default(document_classes)
                 # incorporado nuevo, para la compra
                 if operation_type == 'purchase':
                     inv.available_journals = []
