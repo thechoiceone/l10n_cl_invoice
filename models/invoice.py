@@ -168,11 +168,82 @@ class account_invoice(models.Model):
             recs = self.search([('name', operator, name)] + args, limit=limit)
         return recs.name_get()
 
-    @api.onchange('company_id')
-    def _refreshJournal(self):
-        if self.journal_id and self.journal_id.company_id != self.company_id.id:
-            self.journal_id = False
+    def _buscarTaxEquivalente(self,tax):
+        tax_n = self.env['account.tax'].search(
+            [
+                ('sii_code', '=', tax.sii_code),
+                ('sii_type', '=', tax.sii_type),
+                ('retencion', '=', tax.retencion),
+                ('type_tax_use', '=', tax.type_tax_use),
+                ('no_rec', '=', tax.no_rec),
+                ('company_id', '=', self.company_id.id),
+                ('price_include', '=', tax.price_include),
+                ('amount', '=', tax.amount),
+                ('amount_type', '=', tax.amount_type),
+            ]
+        )
+        return tax_n
 
+    def _crearTaxEquivalente(self):
+        tax_n = self.env['account.tax'].create({
+            'sii_code': tax.sii_code,
+            'sii_type': tax.sii_type,
+            'retencion': tax.retencion,
+            'type_tax_use':tax.type_tax_use,
+            'no_rec': tax.no_rec,
+            'name': tax.name,
+            'description': tax.description,
+            'tax_group_id': tax.tax_group_id.id,
+            'company_id': self.company_id.id,
+            'price_include':tax.price_include,
+            'amount': tax.amount,
+            'amount_type': tax.amount_type,
+            'account_id':tax.account_id.id,
+            'refund_account_id': tax.refund_account_id.id,
+        })
+        return tax
+
+    @api.onchange('company_id')
+    def _refreshRecords(self):
+        if self.journal_id and self.journal_id.company_id != self.company_id.id:
+            inv_type = self._context.get('type', 'out_invoice')
+            inv_types = inv_type if isinstance(inv_type, list) else [inv_type]
+            company_id = self._context.get('company_id', self.company_id.id)
+            domain = [
+                ('type', 'in', filter(None, map(TYPE2JOURNAL.get, inv_types))),
+                ('company_id', '=', company_id),
+            ]
+            journal = self.journal_id = self.env['account.journal'].search(domain, limit=1)
+            for line in self.invoice_line_ids:
+                tax_ids = []
+                if self._context.get('type') in ('out_invoice', 'in_refund'):
+                    line.account_id = journal.default_credit_account_id.id
+                else:
+                    line.account_id = journal.default_debit_account_id.id
+                if self._context.get('type') in ('out_invoice', 'out_refund'):
+                    for tax in line.product_id.taxes_id:
+                        if tax.company_id.id == self.company_id.id:
+                            tax_ids.append(tax.id)
+                        else:
+                            tax_n = self._buscarTaxEquivalente(tax)
+                            if not tax_n:
+                                tax_n = self._crearTaxEquivalente(tax)
+                            tax_ids.append(tax_n.id)
+                    line.product_id.taxes_id = False
+                    line.product_id.taxes_id = tax_ids
+                else:
+                    for tax in line.product_id.supplier_taxes_id:
+                        if tax.company_id.id == self.company_id.id:
+                            tax_ids.append(tax.id)
+                        else:
+                            tax_n = self._buscarTaxEquivalente(tax)
+                            if not tax_n:
+                                tax_n = self._crearTaxEquivalente(tax)
+                            tax_ids.append(tax_n.id)
+                    line.invoice_line_tax_ids = False
+                    line.product_id.supplier_taxes_id.append = tax_ids
+                line.invoice_line_tax_ids = False
+                line.invoice_line_tax_ids = tax_ids
 
     @api.onchange('journal_id', 'partner_id', 'turn_issuer','invoice_turn')
     def _get_available_journal_document_class(self, default=None):
