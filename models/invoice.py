@@ -11,6 +11,13 @@ import openerp.addons.decimal_precision as dp
 import logging
 _logger = logging.getLogger(__name__)
 
+TYPE2JOURNAL = {
+    'out_invoice': 'sale',
+    'in_invoice': 'purchase',
+    'out_refund': 'sale',
+    'in_refund': 'purchase',
+}
+
 class AccountInvoiceLine(models.Model):
     _inherit = 'account.invoice.line'
 
