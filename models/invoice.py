@@ -50,7 +50,8 @@ class AccountInvoiceTax(models.Model):
         neto = 0
         for tax in self:
             base = tax.base
-            amount_tax = sum(tax.amount)
+            price_tax_included = 0
+            #amount_tax +=tax.amount
             for line in tax.invoice_id.invoice_line_ids:
                 if tax.tax_id in line.invoice_line_tax_ids and tax.tax_id.price_include:
                     price_tax_included += line.price_tax_included
@@ -76,6 +77,50 @@ class AccountInvoiceTax(models.Model):
 class account_invoice(models.Model):
     _inherit = "account.invoice"
 
+    def _repairDiff(self, move_lines, dif):#usualmente es de 1 $ cuando se aplica descuentoo es valor iva incluido
+        total = self.amount_total
+        new_lines = []
+        for line in move_lines:
+            if line[2]['tax_ids'] and not line[2]['tax_line_id']:#iva ya viene con descuento
+                if dif > 0:
+                    val = 1
+                    dif -= 1
+                elif dif < 0:
+                    val = -1
+                    dif += 1
+                else:
+                    val = 0
+                if line[2]['tax_ids']:
+                    for t in line[2]['tax_ids']:
+                        imp = self.env['account.tax'].browse(t[1])
+                        if imp.amount > 0  and line[2]['debit'] > 0:
+                            line[2]['debit'] += val
+                        elif imp.amount > 0:
+                            line[2]['credit'] += val
+            if line[2]['name'] == '/':
+                if line[2]['credit'] > 0:
+                    line[2]['credit'] = total
+                else:
+                    line[2]['debit'] = total
+            new_lines.append(line)
+        if dif != 0 :
+            new_lines = self._repairDiff(new_lines, dif)
+        return new_lines
+
+    @api.multi
+    def finalize_invoice_move_lines(self, move_lines):
+        dif = 0
+        total = self.amount_total
+        for line in move_lines:
+            if line[2]['name'] == '/':
+                if line[2]['credit'] > 0:
+                    dif = total - line[2]['credit']
+                else:
+                    dif = total - line[2]['debit']
+        if dif != 0:
+            move_lines = self._repairDiff( move_lines, dif)
+        return move_lines
+
     def _compute_amount(self):
         for inv in self:
             amount_tax = 0
@@ -85,7 +130,7 @@ class account_invoice(models.Model):
                     included = True
                 amount_tax += tax.amount
             if included:
-                neto = inv.tax_line_ids._getNeto(inv.tax_line_ids)
+                neto = inv.tax_line_ids._getNeto()
             else:
                 neto = sum(line.price_subtotal for line in inv.invoice_line_ids)
             inv.amount_untaxed = neto
