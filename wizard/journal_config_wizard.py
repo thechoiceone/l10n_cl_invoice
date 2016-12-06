@@ -80,27 +80,22 @@ Include unusual taxes documents, as transfer invoice, and reissue
                     _('Please, set your company responsability in the company partner before continue.'))
                 _logger.warning(
                     'Your company "%s" has not setted any responsability.' % journal.company_id.name)
-          
+
             journal_type = journal.type
             if journal_type in ['sale', 'sale_refund']:
                 letter_ids = [x.id for x in responsability.issued_letter_ids]
             elif journal_type in ['purchase', 'purchase_refund']:
                 letter_ids = [x.id for x in responsability.received_letter_ids]
-            
+
             if journal_type == 'sale':
-                for doc_type in ['invoice', 'debit_note']:
+                for doc_type in ['invoice', 'credit_note', 'debit_note']:
                     self.create_journal_document(
                         cr, uid, letter_ids, doc_type, journal.id, wz, context)
             elif journal_type == 'purchase':
-                for doc_type in ['invoice', 'debit_note', 'invoice_in']:
+                for doc_type in ['invoice', 'debit_note', 'credit_note', 'invoice_in']:
                     self.create_journal_document(
                         cr, uid, letter_ids, doc_type, journal.id, wz, context)
                     # self.create_journal_document(cr, uid, letter_ids, doc_type, journal.id, non_dte_register, dte_register, settlement_invoice, free_tax_zone, credit_notes, debit_notes, context)
-            elif journal_type in ['sale_refund', 'purchase_refund']:
-                print('notas de credito de compra o venta')
-                self.create_journal_document(
-                    cr, uid, letter_ids, 'credit_note', journal.id, wz, context)
-
     def create_sequence(self, cr, uid, name, journal, context=None):
         vals = {
             'name': journal.name + ' - ' + name,
