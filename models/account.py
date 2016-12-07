@@ -202,7 +202,7 @@ class account_journal_sii_document_class(models.Model):
             result.append((record.id, record.sii_document_class_id.name))
         return result
 
-    _order = 'journal_id desc, sequence, id'
+    _order = 'sequence'
 
     sii_document_class_id = new_fields.Many2one('sii.document_class',
                                                 'Document Type', required=True)
