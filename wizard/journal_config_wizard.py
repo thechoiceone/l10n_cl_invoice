@@ -15,7 +15,7 @@ class account_journal_document_config(models.TransientModel):
 
     debit_notes = fields.Selection(
             [('dont_use','Do not use'), ('own_sequence','Use')],
-            string='Debit Notes', required=True, default='own_sequence'),
+            string='Debit Notes', required=True, default='own_sequence')
     credit_notes = fields.Selection(
             [('own_sequence','Use')], string='Credit Notes', required=True,
             default='own_sequence')
