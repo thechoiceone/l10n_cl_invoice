@@ -9,6 +9,7 @@
     'depends': [
         'account',
         'account_accountant',
+        'l10n_cl',
         'l10n_cl_base_rut',
         'l10n_cl_partner_activities'
         ],
