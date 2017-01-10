@@ -6,14 +6,24 @@ from openerp.exceptions import Warning
 import logging
 _logger = logging.getLogger(__name__)
 
+class SiiTaxTemplate(models.Model):
+    _inherit = 'account.tax.template'
 
-class SiiTaxCode(models.Model):
+    sii_code = new_fields.Integer('SII Code')
+    sii_type = new_fields.Selection([ ('A','Anticipado'),('R','Retención')], string="Tipo de impuesto para el SII")
+    retencion = new_fields.Float(string="Valor retención", default=0.00)
+    no_rec = new_fields.Boolean(string="Es No Recuperable")#esto es distinto al código no recuperable, depende del manejo de recuperación de impuesto
+    activo_fijo = new_fields.Boolean(string="Activo Fijo", default=False)
+
+
+class SiiTax(models.Model):
     _inherit = 'account.tax'
 
     sii_code = new_fields.Integer('SII Code')
     sii_type = new_fields.Selection([ ('A','Anticipado'),('R','Retención')], string="Tipo de impuesto para el SII")
     retencion = new_fields.Float(string="Valor retención", default=0.00)
     no_rec = new_fields.Boolean(string="Es No Recuperable")#esto es distinto al código no recuperable, depende del manejo de recuperación de impuesto
+    activo_fijo = new_fields.Boolean(string="Activo Fijo", default=False)
 
     @api.v8
     def compute_all(self, price_unit, currency=None, quantity=1.0, product=None, partner=None, discount=None):
