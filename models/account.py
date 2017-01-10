@@ -125,7 +125,7 @@ class SiiTax(models.Model):
             neto = base_amount / (1 + self.amount / 100)
             iva = base_amount - neto
             return iva
-        return super(SiiTaxCode,self)._compute_amount(base_amount, price_unit, quantity, product, partner)
+        return super(SiiTax,self)._compute_amount(base_amount, price_unit, quantity, product, partner)
 
 class account_move(models.Model):
     _inherit = "account.move"
