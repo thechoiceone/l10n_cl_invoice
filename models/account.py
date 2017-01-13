@@ -265,6 +265,8 @@ class account_journal(models.Model):
     excempt_documents = new_fields.Boolean(
         'Excempt Documents Available', compute='_check_activities')
 
+    restore_mode = new_fields.Boolean(string="Restore Mode", default=False)
+
 
     @api.multi
     def _get_default_doc(self):

@@ -22,7 +22,8 @@
                 <field name="type" position="after">
                     <field name="sucursal_id" />
                     <field name="sii_code" />
-                    <field name="use_documents" attrs="{'invisible': [('type','not in',['purchase','sale','purchase_refund','sale_refund','general'])]}"/>
+                    <field name="use_documents" attrs="{'invisible': [('type', 'not in', ['purchase', 'sale', 'purchase_refund', 'sale_refund', 'general'])]}"/>
+                    <field name="restore_mode" attrs="{'invisible': [('type', 'not in', ['sale_refund', 'sale'])]}"/>
                 </field>
 
                 <notebook position="inside">
