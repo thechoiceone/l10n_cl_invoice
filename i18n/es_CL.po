@@ -52,14 +52,14 @@ msgid "Account Entry"
 msgstr "Cuenta"
 
 #. module: l10n_cl_invoice
-#: model:ir.model.fields,field_description:l10n_cl_dte.field_sii_concept_type_sii_document_class_active
-#: model:ir.model.fields,field_description:l10n_cl_dte.field_sii_document_type_active
-#: model:ir.model.fields,field_description:l10n_cl_dte.field_sii_responsability_active
+#: model:ir.model.fields,field_description:l10n_cl_invoice.field_sii_concept_type_sii_document_class_active
+#: model:ir.model.fields,field_description:l10n_cl_invoice.field_sii_document_type_active
+#: model:ir.model.fields,field_description:l10n_cl_invoice.field_sii_responsability_active
 msgid "Active"
 msgstr "Activo"
 
 #. module: l10n_cl_invoice
-#: model:ir.model.fields,field_description:l10n_cl_dte.field_sii_optional_type_apply_rule
+#: model:ir.model.fields,field_description:l10n_cl_invoice.field_sii_optional_type_apply_rule
 msgid "Apply rule"
 msgstr "Aplicar regla"
 
@@ -69,13 +69,13 @@ msgid "Cancel"
 msgstr "Cancelar"
 
 #. module: l10n_cl_invoice
-#: model:ir.model.fields,field_description:l10n_cl_dte.field_sii.document_type_code
-#: model:ir.model.fields,field_description:l10n_cl_dte.field_sii_responsability_code
+#: model:ir.model.fields,field_description:l10n_cl_invoice.field_sii.document_type_code
+#: model:ir.model.fields,field_description:l10n_cl_invoice.field_sii_responsability_code
 msgid "Code"
 msgstr "Código"
 
 #. module: l10n_cl_invoice
-#: model:ir.model.fields,field_description:l10n_cl_dte.field_sii_document_class_code_template
+#: model:ir.model.fields,field_description:l10n_cl_invoice.field_sii_document_class_code_template
 msgid "Code Template for Journal"
 msgstr "Plantilla de Código para Diario"
 
@@ -85,7 +85,7 @@ msgid "Code must be unique!"
 msgstr "El código debe ser único!"
 
 #. module: l10n_cl_invoice
-#: model:ir.model.fields,field_description:l10n_cl_dte.field_res_company_name
+#: model:ir.model.fields,field_description:l10n_cl_invoice.field_res_company_name
 msgid "Companies"
 msgstr "Compañías"
 
@@ -181,7 +181,7 @@ msgid "Discriminate VAT on Quotations and Sale Orders?"
 msgstr "¿Discrimina IVA en cotizaciones y órdenes de venta?"
 
 #. module: l10n_cl_invoice
-#: model:ir.model.fields,field_description:l10n_cl_dte.field_account_invoice_vat_discriminated
+#: model:ir.model.fields,field_description:l10n_cl_invoice.field_account_invoice_vat_discriminated
 msgid "Discriminate VAT?"
 msgstr "¿Discrimina IVA?"
 
@@ -211,7 +211,7 @@ msgid "Document Letter"
 msgstr "Letra del Documento"
 
 #. module: l10n_cl_invoice
-#: model:ir.model.fields,field_description:l10n_cl_dte.field_account_invoice_sii_document_number
+#: model:ir.model.fields,field_description:l10n_cl_invoice.field_account_invoice_sii_document_number
 #: field:account.move,document_number
 #: field:account.move,sii_document_number
 #: field:account.move.line,document_number
@@ -225,7 +225,7 @@ msgstr "Tipo de Secuencia de Documento"
 
 #. module: l10n_cl_invoice
 #: model:ir.ui.view,arch_db:l10n_cl_invoice.view_account_invoice_filter
-#: model:ir.model.fields,field_description:l10n_cl_dte.field_account_invoice_sii_document_class_id
+#: model:ir.model.fields,field_description:l10n_cl_invoice.field_account_invoice_sii_document_class_id
 #: field:account.journal.sii_document_class,sii_document_class_id
 #: field:account.move,document_class_id
 #: field:account.move.line,document_class_id
@@ -259,7 +259,7 @@ msgid "Documents Class"
 msgstr "Clases de Documentos"
 
 #. module: l10n_cl_invoice
-#: model:ir.model.fields,field_description:l10n_cl_dte.field_account_invoice_journal_document_class_id
+#: model:ir.model.fields,field_description:l10n_cl_invoice.field_account_invoice_journal_document_class_id
 msgid "Documents Type"
 msgstr "Tipos de Documentos"
 
@@ -274,7 +274,7 @@ msgid "Entry Sequence"
 msgstr "Secuencia de Entrada"
 
 #. module: l10n_cl_invoice
-#: model:ir.model.fields,field_description:l10n_cl_dte.field_account_invoice_exempt_amount
+#: model:ir.model.fields,field_description:l10n_cl_invoice.field_account_invoice_exempt_amount
 #: field:account.invoice.line,exempt_amount
 msgid "Exempt Amount"
 msgstr "Monto Exento"
@@ -458,7 +458,7 @@ msgid "Other Documents"
 msgstr "Otros Documentos"
 
 #. module: l10n_cl_invoice
-#: model:ir.model.fields,field_description:l10n_cl_dte.field_account_invoice_other_taxes_amount
+#: model:ir.model.fields,field_description:l10n_cl_invoice.field_account_invoice_other_taxes_amount
 #: field:account.invoice.line,other_taxes_amount
 msgid "Other Taxes Amount"
 msgstr "Otros montos de Impuestos"
@@ -574,7 +574,7 @@ msgid "Responsabilities"
 msgstr "Responsabilidades"
 
 #. module: l10n_cl_invoice
-#: model:ir.model.fields,field_description:l10n_cl_dte.field_account_invoice_responsability_id
+#: model:ir.model.fields,field_description:l10n_cl_invoice.field_account_invoice_responsability_id
 #: field:res.partner,responsability_id
 msgid "Responsability"
 msgstr "Responsabilidad"
@@ -779,7 +779,7 @@ msgstr ""
 "misma secuencia de las facturas?"
 
 #. module: l10n_cl_invoice
-#: model:ir.model.fields,field_description:l10n_cl_dte.field_account_invoice_vat_tax_ids
+#: model:ir.model.fields,field_description:l10n_cl_invoice.field_account_invoice_vat_tax_ids
 msgid "VAT Taxes"
 msgstr "Impuestos IVA"
 
@@ -789,7 +789,7 @@ msgid "Value computation"
 msgstr "Cómputo del Valor"
 
 #. module: l10n_cl_invoice
-#: model:ir.model.fields,field_description:l10n_cl_dte.field_account_invoice_vat_amount field:account.invoice.line,vat_amount
+#: model:ir.model.fields,field_description:l10n_cl_invoice.field_account_invoice_vat_amount field:account.invoice.line,vat_amount
 msgid "Vat Amount"
 msgstr "Monto de IVA"
 
