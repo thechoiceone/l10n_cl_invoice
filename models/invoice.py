@@ -56,10 +56,7 @@ class AccountInvoiceTax(models.Model):
                 if tax.tax_id in line.invoice_line_tax_ids and tax.tax_id.price_include:
                     price_tax_included += line.price_tax_included
             if price_tax_included > 0:
-                base = round(price_tax_included / ( 1 + tax.tax_id.amount / 100))
-                iva_round =  round(base * ( tax.tax_id.amount / 100))
-                if round(base + iva_round) != round(price_tax_included):
-                    base = int(price_tax_included / (1 + tax.tax_id.amount / 100))
+                base = round(price_tax_included / ( 1 + tax.tax_id.amount / 100.0))
             neto += base
         return neto
 
