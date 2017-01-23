@@ -440,9 +440,6 @@ a VAT."""))
         related='commercial_partner_id.responsability_id',
         store=True,
         )
-    formated_vat = fields.Char(
-        string='Responsability',
-        related='commercial_partner_id.formated_vat',)
     iva_uso_comun = fields.Boolean(string="Uso Común", readonly=True, states={'draft': [('readonly', False)]}) # solamente para compras tratamiento del iva
     no_rec_code = fields.Selection([
                     ('1','Compras destinadas a IVA a generar operaciones no gravados o exentas.'),
