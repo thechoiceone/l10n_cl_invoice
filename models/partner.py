@@ -49,7 +49,7 @@ class res_partner(models.Model):
                 re.sub('[^1234567890Kk]', '', str(
                     self.document_number))).zfill(9).upper()
             vat = 'CL%s' % document_number
-            exist = self.env['res.partner'].search([('vat','=', vat), 'vat', '=',  'CL55555555K'], limit=1)
+            exist = self.env['res.partner'].search([('vat','=', vat), ('vat', '!=',  'CL555555555')], limit=1)
             if exist:
                 self.vat = self.document_number = ""
                 return {
