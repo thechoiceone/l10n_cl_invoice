@@ -254,45 +254,43 @@ class account_invoice(models.Model):
 
     @api.onchange('company_id')
     def _refreshRecords(self):
-        if self.journal_id and self.journal_id.company_id != self.company_id.id:
-            inv_type = self._context.get('type', 'out_invoice')
-            inv_types = inv_type if isinstance(inv_type, list) else [inv_type]
-            company_id = self._context.get('company_id', self.company_id.id)
-            domain = [
-                ('type', 'in', filter(None, map(TYPE2JOURNAL.get, inv_types))),
-                ('company_id', '=', company_id),
-            ]
-            journal = self.journal_id = self.env['account.journal'].search(domain, limit=1)
-            for line in self.invoice_line_ids:
-                tax_ids = []
-                if self._context.get('type') in ('out_invoice', 'in_refund'):
-                    line.account_id = journal.default_credit_account_id.id
-                else:
-                    line.account_id = journal.default_debit_account_id.id
-                if self._context.get('type') in ('out_invoice', 'out_refund'):
-                    for tax in line.product_id.taxes_id:
-                        if tax.company_id.id == self.company_id.id:
-                            tax_ids.append(tax.id)
-                        else:
-                            tax_n = self._buscarTaxEquivalente(tax)
-                            if not tax_n:
-                                tax_n = self._crearTaxEquivalente(tax)
-                            tax_ids.append(tax_n.id)
-                    line.product_id.taxes_id = False
-                    line.product_id.taxes_id = tax_ids
-                else:
-                    for tax in line.product_id.supplier_taxes_id:
-                        if tax.company_id.id == self.company_id.id:
-                            tax_ids.append(tax.id)
-                        else:
-                            tax_n = self._buscarTaxEquivalente(tax)
-                            if not tax_n:
-                                tax_n = self._crearTaxEquivalente(tax)
-                            tax_ids.append(tax_n.id)
-                    line.invoice_line_tax_ids = False
-                    line.product_id.supplier_taxes_id.append = tax_ids
+        inv_type = self._context.get('type', 'out_invoice')
+        inv_types = inv_type if isinstance(inv_type, list) else [inv_type]
+        domain = [
+            ('type', 'in', filter(None, map(TYPE2JOURNAL.get, inv_types))),
+            ('company_id', '=', self.company_id.id),
+        ]
+        journal = self.journal_id = self.env['account.journal'].search(domain, limit=1)
+        for line in self.invoice_line_ids:
+            tax_ids = []
+            if self._context.get('type') in ('out_invoice', 'in_refund'):
+                line.account_id = journal.default_credit_account_id.id
+            else:
+                line.account_id = journal.default_debit_account_id.id
+            if self._context.get('type') in ('out_invoice', 'out_refund'):
+                for tax in line.product_id.taxes_id:
+                    if tax.company_id.id == self.company_id.id:
+                        tax_ids.append(tax.id)
+                    else:
+                        tax_n = self._buscarTaxEquivalente(tax)
+                        if not tax_n:
+                            tax_n = self._crearTaxEquivalente(tax)
+                        tax_ids.append(tax_n.id)
+                line.product_id.taxes_id = False
+                line.product_id.taxes_id = tax_ids
+            else:
+                for tax in line.product_id.supplier_taxes_id:
+                    if tax.company_id.id == self.company_id.id:
+                        tax_ids.append(tax.id)
+                    else:
+                        tax_n = self._buscarTaxEquivalente(tax)
+                        if not tax_n:
+                            tax_n = self._crearTaxEquivalente(tax)
+                        tax_ids.append(tax_n.id)
                 line.invoice_line_tax_ids = False
-                line.invoice_line_tax_ids = tax_ids
+                line.product_id.supplier_taxes_id.append = tax_ids
+            line.invoice_line_tax_ids = False
+            line.invoice_line_tax_ids = tax_ids
 
     @api.onchange('journal_id', 'partner_id', 'turn_issuer','invoice_turn')
     def _get_available_journal_document_class(self, default=None):
