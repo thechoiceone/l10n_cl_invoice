@@ -147,7 +147,6 @@ class account_invoice(models.Model):
     def get_taxes_values(self):
         tax_grouped = {}
         for line in self.invoice_line_ids:
-            tot_discount = line.price_unit * ((line.discount or 0.0) / 100.0)
             taxes = line.invoice_line_tax_ids.compute_all(line.price_unit, self.currency_id, line.quantity, line.product_id, self.partner_id, discount=line.discount)['taxes']
             for tax in taxes:
                 val = self._prepare_tax_line_vals(line, tax)
@@ -391,7 +390,10 @@ a VAT."""))
 
     turn_issuer = fields.Many2one(
         'partner.activities',
-        'Giro Emisor', readonly=True, store=True, required=False,
+        'Giro Emisor',
+        readonly=True,
+        store=True,
+        required=False,
         states={'draft': [('readonly', False)]},
         )
 
