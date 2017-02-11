@@ -182,6 +182,26 @@
                             domain="[('id','in',available_journal_document_class_ids[0][2])]"
                             options="{'no_create': True}"/>
                 </field>
+                <xpath expr="//notebook/page[2]/group" position="after">
+                    <field name="referencias" mode="tree">
+                      <form>
+                        <group>
+                          <field name="origen" required="True"/>
+                          <field name="sii_referencia_TpoDocRef" required="True" />
+                          <field name="sii_referencia_CodRef"/>
+                          <field name="motivo"/>
+                          <field name="fecha_documento"/>
+                        </group>
+                      </form>
+                      <tree>
+                        <field name="origen" required="True"/>
+                        <field name="sii_referencia_TpoDocRef" required="True" />
+                        <field name="sii_referencia_CodRef"/>
+                        <field name="motivo"/>
+                        <field name="fecha_documento"/>
+                      </tree>
+                    </field>
+                </xpath>
                 <field name="turn_issuer" position="attributes">
                     <attribute name="string">Giro de compra</attribute>
                     <attribute name="help">Indique a cuál giro de la compañía se asigna esta compra</attribute>
