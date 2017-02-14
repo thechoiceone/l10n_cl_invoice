@@ -86,16 +86,13 @@ class AccountInvoiceRefund(models.TransientModel):
                 created_inv.append(refund.id)
                 refund.update({
                     'turn_issuer': inv.turn_issuer.id,
-                })
-                if inv.type in ['out_invoice','out_refund']:
-                    refund.update({
-                        'referencias':[[5,],[0,0, {
-                                                    'origen': int(inv.sii_document_number),
-                                                    'sii_referencia_TpoDocRef': inv.sii_document_class_id.id,
-                                                    'sii_referencia_CodRef': mode,
-                                                    'motivo': description,
-                                                    'fecha_documento': inv.date_invoice
-                                                }]],
+                    'referencias':[[5,],[0,0, {
+                                'origen': int(inv.sii_document_number or inv.reference),
+                                'sii_referencia_TpoDocRef': inv.sii_document_class_id.id,
+                                'sii_referencia_CodRef': mode,
+                                'motivo': description,
+                                'fecha_documento': inv.date_invoice
+                            }]],
                     })
                 xml_id = (inv.type in ['out_refund', 'out_invoice']) and 'action_invoice_tree1' or \
                          (inv.type in ['in_refund', 'in_invoice']) and 'action_invoice_tree2'
