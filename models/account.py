@@ -15,7 +15,6 @@ class SiiTaxTemplate(models.Model):
     no_rec = new_fields.Boolean(string="Es No Recuperable")#esto es distinto al código no recuperable, depende del manejo de recuperación de impuesto
     activo_fijo = new_fields.Boolean(string="Activo Fijo", default=False)
 
-
 class SiiTax(models.Model):
     _inherit = 'account.tax'
 
@@ -64,7 +63,8 @@ class SiiTax(models.Model):
         base = round(price_unit * quantity, prec)
         tot_discount = round(base * ((discount or 0.0) /100))
         base -= tot_discount
-        total_excluded = total_included = base
+        total_excluded = base
+        total_included = base
 
         if company_id.tax_calculation_rounding_method == 'round_globally' or not bool(self.env.context.get("round", True)):
             prec += 5
@@ -79,7 +79,8 @@ class SiiTax(models.Model):
                 total_excluded = ret['total_excluded']
                 base = ret['base']
                 total_included = ret['total_included']
-                tax_amount = total_included - total_excluded
+                tax_amount_retencion = ret['retencion']
+                tax_amount = total_included - total_excluded + tax_amount_retencion
                 taxes += ret['taxes']
                 continue
 
@@ -88,13 +89,23 @@ class SiiTax(models.Model):
                 tax_amount = round(tax_amount, prec)
             else:
                 tax_amount = currency.round(tax_amount)
-
-            if tax.price_include:
-                total_excluded -= tax_amount
-                base -= tax_amount
+            tax_amount_retencion = 0
+            if tax.sii_type in ['R']:
+                tax_amount_retencion = tax._compute_amount_ret(base, price_unit, quantity, product, partner)
+                if company_id.tax_calculation_rounding_method == 'round_globally' or not bool(self.env.context.get("round", True)):
+                    tax_amount_retencion = round(tax_amount_retencion, prec)
+                if tax.price_include:
+                    total_included -= (tax_amount - tax_amount_retencion)
+                    total_excluded += (tax_amount - tax_amount_retencion)
+                    base += (tax_amount - tax_amount_retencion)
+                else:
+                    total_excluded += (tax_amount - tax_amount_retencion)
             else:
-                total_included += tax_amount
-
+                if tax.price_include:
+                    total_excluded -= tax_amount
+                    base -= tax_amount
+                else:
+                    total_included += tax_amount
             # Keep base amount used for the current tax
             tax_base = base
 
@@ -105,6 +116,7 @@ class SiiTax(models.Model):
                 'id': tax.id,
                 'name': tax.with_context(**{'lang': partner.lang} if partner else {}).name,
                 'amount': tax_amount,
+                'retencion': tax_amount_retencion,
                 'base': tax_base,
                 'sequence': tax.sequence,
                 'account_id': tax.account_id.id,
@@ -123,9 +135,17 @@ class SiiTax(models.Model):
     def _compute_amount(self, base_amount, price_unit, quantity=1.0, product=None, partner=None):
         if self.amount_type == 'percent' and self.price_include:
             neto = base_amount / (1 + self.amount / 100)
-            iva = base_amount - neto
-            return iva
+            tax = base_amount - neto
+            return tax
         return super(SiiTax,self)._compute_amount(base_amount, price_unit, quantity, product, partner)
+
+    def _compute_amount_ret(self, base_amount, price_unit, quantity=1.0, product=None, partner=None):
+        if self.amount_type == 'percent' and self.price_include:
+            neto = base_amount / (1 + self.retencion / 100)
+            tax = base_amount - neto
+            return tax
+        if (self.amount_type == 'percent' and not self.price_include) or (self.amount_type == 'division' and self.price_include):
+            return base_amount * self.retencion / 100
 
 class account_move(models.Model):
     _inherit = "account.move"

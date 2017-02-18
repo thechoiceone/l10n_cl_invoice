@@ -3,11 +3,6 @@ from openerp import osv, models, fields, api, _
 from openerp.osv import fields as old_fields
 from openerp.exceptions import except_orm, UserError
 import openerp.addons.decimal_precision as dp
-# from inspect import currentframe, getframeinfo
-# estas 2 lineas son para imprimir el numero de linea del script
-# (solo para debug)
-# frameinfo = getframeinfo(currentframe())
-# print(frameinfo.filename, frameinfo.lineno)
 import logging
 _logger = logging.getLogger(__name__)
 
@@ -71,6 +66,9 @@ class AccountInvoiceTax(models.Model):
         else:
             super(AccountInvoiceTax, self)._compute_base_amount()
 
+    amount_retencion = fields.Monetary(string="Retención",
+        default=0.00,)
+
 class account_invoice(models.Model):
     _inherit = "account.invoice"
 
@@ -121,18 +119,21 @@ class account_invoice(models.Model):
     def _compute_amount(self):
         for inv in self:
             amount_tax = 0
+            amount_retencion = 0
             included = False
             for tax in inv.tax_line_ids:
                 if tax.tax_id.price_include:
                     included = True
                 amount_tax += tax.amount
+                amount_retencion  += tax.amount_retencion
             if included:
                 neto = inv.tax_line_ids._getNeto()
             else:
                 neto = sum(line.price_subtotal for line in inv.invoice_line_ids)
             inv.amount_untaxed = neto
             inv.amount_tax = amount_tax
-            inv.amount_total = inv.amount_untaxed + inv.amount_tax
+            inv.amount_retencion = amount_retencion
+            inv.amount_total = inv.amount_untaxed + inv.amount_tax - inv.amount_retencion
             amount_total_company_signed = inv.amount_total
             amount_untaxed_signed = inv.amount_untaxed
             if inv.currency_id and inv.currency_id != inv.company_id.currency_id:
@@ -143,6 +144,11 @@ class account_invoice(models.Model):
             inv.amount_total_signed = inv.amount_total * sign
             inv.amount_untaxed_signed = amount_untaxed_signed * sign
 
+    def _prepare_tax_line_vals(self, line, tax):
+        vals = super(account_invoice, self)._prepare_tax_line_vals(line, tax)
+        vals['amount_retencion'] = tax['retencion']
+        return vals
+
     @api.multi
     def get_taxes_values(self):
         tax_grouped = {}
@@ -150,23 +156,20 @@ class account_invoice(models.Model):
             taxes = line.invoice_line_tax_ids.compute_all(line.price_unit, self.currency_id, line.quantity, line.product_id, self.partner_id, discount=line.discount)['taxes']
             for tax in taxes:
                 val = self._prepare_tax_line_vals(line, tax)
-
                 # If the taxes generate moves on the same financial account as the invoice line,
                 # propagate the analytic account from the invoice line to the tax line.
                 # This is necessary in situations were (part of) the taxes cannot be reclaimed,
                 # to ensure the tax move is allocated to the proper analytic account.
                 if not val.get('account_analytic_id') and line.account_analytic_id and val['account_id'] == line.account_id.id:
                     val['account_analytic_id'] = line.account_analytic_id.id
-
                 key = self.env['account.tax'].browse(tax['id']).get_grouping_key(val)
-
                 if key not in tax_grouped:
                     tax_grouped[key] = val
                 else:
                     tax_grouped[key]['amount'] += val['amount']
+                    tax_grouped[key]['amount_retencion'] += val['amount_retencion']
                     tax_grouped[key]['base'] += val['base']
         return tax_grouped
-
 
     def get_document_class_default(self, document_classes):
         if self.turn_issuer.vat_affected not in ['SI', 'ND']:
@@ -467,6 +470,9 @@ a VAT."""))
     forma_pago = fields.Selection([('1','Contado'),('2','Crédito'),('3','Gratuito')],string="Forma de pago", readonly=True, states={'draft': [('readonly', False)]},
                     default='1')
     contact_id = fields.Many2one('res.partner', string="Contacto")
+    amount_retencion = fields.Monetary(string="Retención",
+        default=0.00,
+        compute='_compute_amount')
 
     @api.one
     @api.constrains('supplier_invoice_number', 'partner_id', 'company_id')
