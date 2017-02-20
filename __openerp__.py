@@ -7,6 +7,7 @@
        # 'data/partner_demo.xml',
       ],
     'depends': [
+        'sale',
         'account',
         'account_accountant',
         'l10n_cl',
