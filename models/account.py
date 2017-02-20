@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-from openerp.osv import fields
-from openerp import fields as new_fields
-from openerp import api, models, _
+from openerp import api, models, fields, _
 from openerp.exceptions import Warning
 import logging
 _logger = logging.getLogger(__name__)
@@ -9,20 +7,20 @@ _logger = logging.getLogger(__name__)
 class SiiTaxTemplate(models.Model):
     _inherit = 'account.tax.template'
 
-    sii_code = new_fields.Integer('SII Code')
-    sii_type = new_fields.Selection([ ('A','Anticipado'),('R','Retención')], string="Tipo de impuesto para el SII")
-    retencion = new_fields.Float(string="Valor retención", default=0.00)
-    no_rec = new_fields.Boolean(string="Es No Recuperable")#esto es distinto al código no recuperable, depende del manejo de recuperación de impuesto
-    activo_fijo = new_fields.Boolean(string="Activo Fijo", default=False)
+    sii_code = fields.Integer('SII Code')
+    sii_type = fields.Selection([ ('A','Anticipado'),('R','Retención')], string="Tipo de impuesto para el SII")
+    retencion = fields.Float(string="Valor retención", default=0.00)
+    no_rec = fields.Boolean(string="Es No Recuperable")#esto es distinto al código no recuperable, depende del manejo de recuperación de impuesto
+    activo_fijo = fields.Boolean(string="Activo Fijo", default=False)
 
 class SiiTax(models.Model):
     _inherit = 'account.tax'
 
-    sii_code = new_fields.Integer('SII Code')
-    sii_type = new_fields.Selection([ ('A','Anticipado'),('R','Retención')], string="Tipo de impuesto para el SII")
-    retencion = new_fields.Float(string="Valor retención", default=0.00)
-    no_rec = new_fields.Boolean(string="Es No Recuperable")#esto es distinto al código no recuperable, depende del manejo de recuperación de impuesto
-    activo_fijo = new_fields.Boolean(string="Activo Fijo", default=False)
+    sii_code = fields.Integer('SII Code')
+    sii_type = fields.Selection([ ('A','Anticipado'),('R','Retención')], string="Tipo de impuesto para el SII")
+    retencion = fields.Float(string="Valor retención", default=0.00)
+    no_rec = fields.Boolean(string="Es No Recuperable")#esto es distinto al código no recuperable, depende del manejo de recuperación de impuesto
+    activo_fijo = fields.Boolean(string="Activo Fijo", default=False)
 
     @api.v8
     def compute_all(self, price_unit, currency=None, quantity=1.0, product=None, partner=None, discount=None):
@@ -175,19 +173,19 @@ class account_move(models.Model):
             document_number = self.name
         self.document_number = document_number
 
-    document_class_id = new_fields.Many2one(
+    document_class_id = fields.Many2one(
         'sii.document_class',
         'Document Type',
         copy=False,
         readonly=True, states={'draft': [('readonly', False)]}
     )
-    sii_document_number = new_fields.Char(
+    sii_document_number = fields.Char(
         string='Document Number',
         copy=False,readonly=True, states={'draft': [('readonly', False)]})
 
-    canceled = new_fields.Boolean(string="Canceled?", readonly=True, states={'draft': [('readonly', False)]})
-    iva_uso_comun = new_fields.Boolean(string="Iva Uso Común", readonly=True, states={'draft': [('readonly', False)]})
-    no_rec_code = new_fields.Selection([
+    canceled = fields.Boolean(string="Canceled?", readonly=True, states={'draft': [('readonly', False)]})
+    iva_uso_comun = fields.Boolean(string="Iva Uso Común", readonly=True, states={'draft': [('readonly', False)]})
+    no_rec_code = fields.Selection([
                     ('1','Compras destinadas a IVA a generar operaciones no gravados o exentas.'),
                     ('2','Facturas de proveedores registrados fuera de plazo.'),
                     ('3','Gastos rechazados.'),
@@ -196,26 +194,26 @@ class account_move(models.Model):
                     string="Código No recuperable",
                     readonly=True, states={'draft': [('readonly', False)]})# @TODO select 1 automático si es emisor 2Categoría
 
-    document_number = new_fields.Char(
+    document_number = fields.Char(
         compute='_get_document_number',
         string='Document Number',
         store=True,
         readonly=True, states={'draft': [('readonly', False)]})
-    sended = new_fields.Boolean(string="Enviado al SII", default=False,readonly=True, states={'draft': [('readonly', False)]})
-    factor_proporcionalidad = new_fields.Float(string="Factor proporcionalidad", default=0.00, readonly=True, states={'draft': [('readonly', False)]})
+    sended = fields.Boolean(string="Enviado al SII", default=False,readonly=True, states={'draft': [('readonly', False)]})
+    factor_proporcionalidad = fields.Float(string="Factor proporcionalidad", default=0.00, readonly=True, states={'draft': [('readonly', False)]})
 
 
 class account_move_line(models.Model):
     _inherit = "account.move.line"
 
-    document_class_id = new_fields.Many2one(
+    document_class_id = fields.Many2one(
         'sii.document_class',
         'Document Type',
         related='move_id.document_class_id',
         store=True,
         readonly=True,
     )
-    document_number = new_fields.Char(
+    document_number = fields.Char(
         string='Document Number',
         related='move_id.document_number',
         store=True,
@@ -234,58 +232,58 @@ class account_journal_sii_document_class(models.Model):
 
     _order = 'sequence'
 
-    sii_document_class_id = new_fields.Many2one('sii.document_class',
+    sii_document_class_id = fields.Many2one('sii.document_class',
                                                 'Document Type', required=True)
-    sequence_id = new_fields.Many2one(
+    sequence_id = fields.Many2one(
         'ir.sequence', 'Entry Sequence', required=False,
         help="""This field contains the information related to the numbering \
         of the documents entries of this document type.""")
-    journal_id = new_fields.Many2one(
+    journal_id = fields.Many2one(
         'account.journal', 'Journal', required=True)
-    sequence = new_fields.Integer('Sequence',)
+    sequence = fields.Integer('Sequence',)
 
 
 class account_journal(models.Model):
     _inherit = "account.journal"
 
-    sucursal_id = new_fields.Many2one(
+    sucursal_id = fields.Many2one(
         'sii.sucursal',
         string="Sucursal")
 
-    sii_code = new_fields.Char(
+    sii_code = fields.Char(
         related='sucursal_id.name',
         string="Código SII Sucursal",
         readonly=True)
 
-    journal_document_class_ids = new_fields.One2many(
+    journal_document_class_ids = fields.One2many(
             'account.journal.sii_document_class', 'journal_id',
             'Documents Class',)
 
-    point_of_sale_id = new_fields.Many2one('sii.point_of_sale','Point of sale')
+    point_of_sale_id = fields.Many2one('sii.point_of_sale','Point of sale')
 
-    point_of_sale = new_fields.Integer(
+    point_of_sale = fields.Integer(
         related='point_of_sale_id.number', string='Point of sale',
         readonly=True)
 
-    use_documents = new_fields.Boolean(
+    use_documents = fields.Boolean(
         'Use Documents?', default='_get_default_doc')
 
-    document_sequence_type = new_fields.Selection(
+    document_sequence_type = fields.Selection(
             [('own_sequence', 'Own Sequence'),
              ('same_sequence', 'Same Invoice Sequence')],
             string='Document Sequence Type',
             help="Use own sequence or invoice sequence on Debit and Credit \
                  Notes?")
 
-    journal_activities_ids = new_fields.Many2many(
+    journal_activities_ids = fields.Many2many(
             'partner.activities',id1='journal_id', id2='activities_id',
             string='Journal Turns', help="""Select the turns you want to \
             invoice in this Journal""")
 
-    excempt_documents = new_fields.Boolean(
+    excempt_documents = fields.Boolean(
         'Excempt Documents Available', compute='_check_activities')
 
-    restore_mode = new_fields.Boolean(string="Restore Mode", default=False)
+    restore_mode = fields.Boolean(string="Restore Mode", default=False)
 
 
     @api.multi
@@ -325,11 +323,11 @@ class account_journal(models.Model):
 
 class res_currency(models.Model):
     _inherit = "res.currency"
-    sii_code = new_fields.Char('SII Code', size=4)
+    sii_code = fields.Char('SII Code', size=4)
 
 
 class partnerActivities(models.Model):
     _inherit = 'partner.activities'
-    journal_ids = new_fields.Many2many(
+    journal_ids = fields.Many2many(
         'account.journal', id1='activities_id', id2='journal_id',
         string='Journals')
