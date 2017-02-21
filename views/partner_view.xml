@@ -6,7 +6,6 @@
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
-                <!--<field name="property_account_position" position="before">-->
                 <field name="ref" position="replace"/>
                 <field name="category_id" position="before">
                     <field name="ref" placeholder="Reference/Name fantasy"/>
@@ -26,10 +25,7 @@
                 <field name="last_reconciliation_date" position="attributes">
                     <attribute name="attrs">{'invisible':1}</attribute>
                 </field>
-      			-->
-                <field name="property_account_position_id" position="attributes">
-                    <attribute name="attrs">{'invisible':1}</attribute>
-                </field>
+                -->
 
                 <field name="vat" position="attributes">
                     <attribute name="attrs">{'invisible':1}</attribute>
