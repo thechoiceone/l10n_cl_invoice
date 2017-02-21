@@ -93,11 +93,11 @@ class SiiTax(models.Model):
                 if company_id.tax_calculation_rounding_method == 'round_globally' or not bool(self.env.context.get("round", True)):
                     tax_amount_retencion = round(tax_amount_retencion, prec)
                 if tax.price_include:
-                    total_included -= (tax_amount - tax_amount_retencion)
-                    total_excluded += (tax_amount - tax_amount_retencion)
-                    base += (tax_amount - tax_amount_retencion)
+                    total_excluded -= (tax_amount - tax_amount_retencion )
+                    total_included -= (tax_amount_retencion)
+                    base -= (tax_amount - tax_amount_retencion )
                 else:
-                    total_excluded += (tax_amount - tax_amount_retencion)
+                    total_included += (tax_amount - tax_amount_retencion)
             else:
                 if tax.price_include:
                     total_excluded -= tax_amount

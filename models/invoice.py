@@ -50,7 +50,9 @@ class AccountInvoiceTax(models.Model):
             for line in tax.invoice_id.invoice_line_ids:
                 if tax.tax_id in line.invoice_line_tax_ids and tax.tax_id.price_include:
                     price_tax_included += line.price_tax_included
-            if price_tax_included > 0:
+            if price_tax_included > 0 and  tax.tax_id.sii_type in ["R"]:
+                base = round(price_tax_included)
+            elif price_tax_included > 0:
                 base = round(price_tax_included / ( 1 + tax.tax_id.amount / 100.0))
             neto += base
         return neto
@@ -68,6 +70,10 @@ class AccountInvoiceTax(models.Model):
 
     amount_retencion = fields.Monetary(string="Retención",
         default=0.00,)
+    retencion_account_id = fields.Many2one('account.account',
+       string='Tax Account',
+       required=True,
+       domain=[('deprecated', '=', False)])
 
 class account_invoice(models.Model):
     _inherit = "account.invoice"
@@ -126,14 +132,15 @@ class account_invoice(models.Model):
                     included = True
                 amount_tax += tax.amount
                 amount_retencion  += tax.amount_retencion
+            inv.amount_retencion = amount_retencion
             if included:
                 neto = inv.tax_line_ids._getNeto()
+                amount_retencion  += amount_retencion
             else:
                 neto = sum(line.price_subtotal for line in inv.invoice_line_ids)
             inv.amount_untaxed = neto
             inv.amount_tax = amount_tax
-            inv.amount_retencion = amount_retencion
-            inv.amount_total = inv.amount_untaxed + inv.amount_tax - inv.amount_retencion
+            inv.amount_total = inv.amount_untaxed + inv.amount_tax - amount_retencion
             amount_total_company_signed = inv.amount_total
             amount_untaxed_signed = inv.amount_untaxed
             if inv.currency_id and inv.currency_id != inv.company_id.currency_id:
@@ -147,7 +154,51 @@ class account_invoice(models.Model):
     def _prepare_tax_line_vals(self, line, tax):
         vals = super(account_invoice, self)._prepare_tax_line_vals(line, tax)
         vals['amount_retencion'] = tax['retencion']
+        vals['retencion_account_id'] = self.type in ('out_invoice', 'in_invoice') and (tax['refund_account_id'] or line.account_id.id) or (tax['account_id'] or line.account_id.id)
         return vals
+
+    @api.model
+    def tax_line_move_line_get(self):
+        res = []
+        # keep track of taxes already processed
+        done_taxes = []
+        # loop the invoice.tax.line in reversal sequence
+        for tax_line in sorted(self.tax_line_ids, key=lambda x: -x.sequence):
+            if tax_line.amount:
+                tax = tax_line.tax_id
+                if tax.amount_type == "group":
+                    for child_tax in tax.children_tax_ids:
+                        done_taxes.append(child_tax.id)
+                done_taxes.append(tax.id)
+                if (tax_line.amount - tax_line.amount_retencion) > 0:
+                    res.append({
+                        'invoice_tax_line_id': tax_line.id,
+                        'tax_line_id': tax_line.tax_id.id,
+                        'type': 'tax',
+                        'name': tax_line.name,
+                        'price_unit': (tax_line.amount - tax_line.amount_retencion),
+                        'quantity': 1,
+                        'price': (tax_line.amount - tax_line.retencion),
+                        'account_id': tax_line.account_id.id,
+                        'account_analytic_id': tax_line.account_analytic_id.id,
+                        'invoice_id': self.id,
+                        'tax_ids': [(6, 0, done_taxes)] if tax_line.tax_id.include_base_amount else []
+                    })
+                if tax_line.amount_retencion > 0:
+                    res.append({
+                        'invoice_tax_line_id': tax_line.id,
+                        'tax_line_id': tax_line.tax_id.id,
+                        'type': 'tax',
+                        'name': tax_line.name,
+                        'price_unit': -tax_line.amount_retencion,
+                        'quantity': 1,
+                        'price': -tax_line.amount_retencion,
+                        'account_id': tax_line.retencion_account_id.id,
+                        'account_analytic_id': tax_line.account_analytic_id.id,
+                        'invoice_id': self.id,
+                        'tax_ids': [(6, 0, done_taxes)] if tax_line.tax_id.include_base_amount else []
+                    })
+        return res
 
     @api.multi
     def get_taxes_values(self):

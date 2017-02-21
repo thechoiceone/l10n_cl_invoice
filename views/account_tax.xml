@@ -69,6 +69,7 @@
         <field name="arch" type="xml">
             <field name="base" position="after">
                 <field name="amount_retencion" />
+                <field name='retencion_account_id' />
             </field>
         </field>
     </record>
@@ -80,6 +81,7 @@
         <field name="arch" type="xml">
             <field name="base" position="after">
                 <field name="amount_retencion" />
+                <field name='retencion_account_id' />
             </field>
         </field>
     </record>
