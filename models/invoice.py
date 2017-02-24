@@ -178,7 +178,7 @@ class account_invoice(models.Model):
                         'name': tax_line.name,
                         'price_unit': (tax_line.amount - tax_line.amount_retencion),
                         'quantity': 1,
-                        'price': (tax_line.amount - tax_line.retencion),
+                        'price': (tax_line.amount - tax_line.amount_retencion),
                         'account_id': tax_line.account_id.id,
                         'account_analytic_id': tax_line.account_analytic_id.id,
                         'invoice_id': self.id,
