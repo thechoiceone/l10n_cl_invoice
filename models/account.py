@@ -228,6 +228,8 @@ class account_journal_sii_document_class(models.Model):
         result = []
         for record in self.browse(cr, uid, ids, context=context):
             result.append((record.id, record.sii_document_class_id.name))
+        if not result:
+            result = [(0, 'Ninguno')]
         return result
 
     _order = 'sequence'
