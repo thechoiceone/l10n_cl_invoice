@@ -190,7 +190,6 @@
                                 'readonly':[
                                     '|',('state','!=','draft'),
                                         ('sii_document_number','!=',False)]}"
-                            domain="[('id','in',available_journal_document_class_ids[0][2])]"
                             options="{'no_create': True}"/>
                 </field>
                 <xpath expr="//notebook/page[2]/group" position="after">
