@@ -223,6 +223,7 @@ class account_invoice(models.Model):
         return tax_grouped
 
     def get_document_class_default(self, document_classes):
+        document_class_id = None
         if self.turn_issuer.vat_affected not in ['SI', 'ND']:
             exempt_ids = [
                 self.env.ref('l10n_cl_invoice.dc_y_f_dtn').id,
@@ -345,7 +346,6 @@ class account_invoice(models.Model):
             line.invoice_line_tax_ids = False
             line.invoice_line_tax_ids = tax_ids
 
-    @api.onchange('journal_id', 'partner_id', 'turn_issuer','invoice_turn')
     def _get_available_journal_document_class(self):
         invoice_type = self.type
         document_class_ids = []
@@ -387,26 +387,29 @@ class account_invoice(models.Model):
                     # If not specific document type found, we choose another one
         return document_class_ids
 
-    @api.onchange('journal_id', 'partner_id', 'turn_issuer', 'invoice_turn', 'referencias')
+    @api.onchange('journal_id', 'partner_id', 'turn_issuer', 'invoice_turn')
     def update_domain_journal(self):
         document_classes = self._get_available_journal_document_class()
-        result = {}
-        if document_classes:
-            result = {'domain':{
-                'journal_document_class_id' : [('id', 'in', document_classes)],
-            }}
+        result = {'domain':{
+            'journal_document_class_id' : [('id', 'in', document_classes)],
+        }}
         return result
 
-    @api.onchange('journal_document_class_id','journal_id', 'partner_id', 'turn_issuer', 'invoice_turn', 'referencias')
+    def _default_journal_document_class_id(self, default=None):
+        ids = self._get_available_journal_document_class()
+        document_classes = self.env['account.journal.sii_document_class'].browse(ids)
+        if default:
+            for dc in document_classes:
+                if dc.sii_document_class_id.id == default:
+                    self.journal_document_class_id = dc.id
+        elif document_classes:
+            default = self.get_document_class_default(document_classes)
+        return default
+
+    @api.onchange('journal_id', 'partner_id', 'turn_issuer', 'invoice_turn')
     def set_default_journal(self, default=None):
-        if not self.journal_document_class_id:
-            document_classes = self.env['account.journal.sii_document_class'].browse(self._get_available_journal_document_class())
-            if default:
-                for dc in document_classes:
-                    if dc.sii_document_class_id.id == default:
-                        self.journal_document_class_id = dc.id
-            else:
-                self.journal_document_class_id = self.get_document_class_default(document_classes)
+        if not self.journal_document_class_id or self.journal_document_class_id.journal_id != self.journal_id:
+            self.journal_document_class_id = self._default_journal_document_class_id(default)
 
 
     @api.onchange('sii_document_class_id')
@@ -476,7 +479,7 @@ a VAT."""))
     journal_document_class_id = fields.Many2one(
         'account.journal.sii_document_class',
         'Documents Type',
-#        default=_default_journal_document_class_id,
+        default=_default_journal_document_class_id,
         domain=_domain_journal_document_class_id,
         readonly=True,
         store=True,
@@ -657,6 +660,13 @@ a VAT."""))
                      ]):
                     raise UserError('El documento %s, Folio %s de la Empresa %s ya se en cuentra registrado' % ( invoice.journal_document_class_id.sii_document_class_id.name, invoice.reference, invoice.partner_id.name))
         return self.write({'state': 'open'})
+
+    @api.model
+    def create(self, vals):
+        inv = super(account_invoice, self).create(vals)
+        inv.update_domain_journal()
+        inv.set_default_journal()
+        return inv
 
 
 class Referencias(models.Model):
