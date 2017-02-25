@@ -223,17 +223,9 @@ class account_move_line(models.Model):
 class account_journal_sii_document_class(models.Model):
     _name = "account.journal.sii_document_class"
     _description = "Journal SII Documents"
-
-    def name_get(self, cr, uid, ids, context=None):
-        result = []
-        for record in self.browse(cr, uid, ids, context=context):
-            result.append((record.id, record.sii_document_class_id.name))
-        if not result:
-            result = [(0, 'Ninguno')]
-        return result
-
     _order = 'sequence'
 
+    name = fields.Char(related='sii_document_class_id.name')
     sii_document_class_id = fields.Many2one('sii.document_class',
                                                 'Document Type', required=True)
     sequence_id = fields.Many2one(
