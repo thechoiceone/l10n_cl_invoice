@@ -65,11 +65,12 @@
         'views/config_view.xml',
         'views/currency_view.xml',
         'views/account_tax.xml',
+        'views/honorarios.xml',
         'security/ir.model.access.csv',
         'security/l10n_cl_invoice_security.xml',
         'data/res.currency.csv',
         'data/tax.xml',
         #'views/sii_menuitem.xml',
     ],
-    'version': '9.0.4.4',
+    'version': '9.0.4.5',
 }
