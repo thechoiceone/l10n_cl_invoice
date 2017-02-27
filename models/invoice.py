@@ -305,15 +305,16 @@ class account_invoice(models.Model):
         })
         return tax
 
+    @api.onchange('partner_id')
+    def update_journal(self):
+        self.journal_id = self._default_journal()
+        self.set_default_journal()
+        return self.update_domain_journal()
+
     @api.onchange('company_id')
     def _refreshRecords(self):
-        inv_type = self._context.get('type', 'out_invoice')
-        inv_types = inv_type if isinstance(inv_type, list) else [inv_type]
-        domain = [
-            ('type', 'in', filter(None, map(TYPE2JOURNAL.get, inv_types))),
-            ('company_id', '=', self.company_id.id),
-        ]
-        journal = self.journal_id = self.env['account.journal'].search(domain, limit=1)
+        self.journal_id = self._default_journal()
+        journal = self.journal_id
         for line in self.invoice_line_ids:
             tax_ids = []
             if self._context.get('type') in ('out_invoice', 'in_refund'):
@@ -375,18 +376,17 @@ class account_invoice(models.Model):
                     if invoice_type  in [ 'in_refund', 'out_refund']:
                         domain += [('sii_document_class_id.document_type','in',['credit_note'] )]
                     else:
-                        options = ['invoice','invoice_in']
+                        options = ['invoice', 'invoice_in']
                         if nd:
                             options.append('debit_note')
                         domain += [('sii_document_class_id.document_type','in', options )]
-
                     document_classes = self.env[
                         'account.journal.sii_document_class'].search(domain)
                     document_class_ids = document_classes.ids
                     # If not specific document type found, we choose another one
         return document_class_ids
 
-    @api.onchange('journal_id', 'partner_id', 'turn_issuer', 'invoice_turn')
+    @api.onchange('journal_id',  'turn_issuer', 'invoice_turn')
     def update_domain_journal(self):
         document_classes = self._get_available_journal_document_class()
         result = {'domain':{
@@ -607,7 +607,6 @@ a VAT."""))
             return []
 
         partner = partner.commercial_partner_id
-
         if operation_type == 'sale':
             issuer_responsability_id = company.partner_id.responsability_id.id
             receptor_responsability_id = partner.responsability_id.id
@@ -622,13 +621,7 @@ a VAT."""))
                     domain.append(('name', '=', 'C'))
         elif operation_type == 'purchase':
             issuer_responsability_id = partner.responsability_id.id
-            receptor_responsability_id = company.partner_id.responsability_id.id
-            domain = ['|',('issuer_ids', '=', issuer_responsability_id),
-                          ('receptor_ids', '=', receptor_responsability_id)]
-            if invoice_type == 'in_invoice':
-                domain = [
-                    ('issuer_ids', '=', issuer_responsability_id),
-                    ('receptor_ids', '=', receptor_responsability_id)]
+            domain = [('issuer_ids', '=', issuer_responsability_id)]
         else:
             raise UserError(_('Operation Type Error'),
                              _('Operation Type Must be "Sale" or "Purchase"'))
@@ -666,6 +659,23 @@ a VAT."""))
         inv.update_domain_journal()
         inv.set_default_journal()
         return inv
+
+    @api.model
+    def _default_journal(self):
+        if self._context.get('default_journal_id', False):
+            return self.env['account.journal'].browse(self._context.get('default_journal_id'))
+        if self._context.get('honorarios', False):
+            inv_type = self._context.get('type', 'out_invoice')
+            inv_types = inv_type if isinstance(inv_type, list) else [inv_type]
+            company_id = self._context.get('company_id', self.env.user.company_id.id)
+            domain = [
+                ('journal_document_class_ids.sii_document_class_id.document_letter_id.name','=','M'),
+                ('type', 'in', filter(None, map(TYPE2JOURNAL.get, inv_types))),
+                ('company_id', '=', company_id),
+            ]
+            journal_id = self.env['account.journal'].search(domain, limit=1)
+            return journal_id
+        return super(account_invoice, self)._default_journal()
 
 
 class Referencias(models.Model):
