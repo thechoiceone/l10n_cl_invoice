@@ -82,7 +82,6 @@ class AccountInvoiceRefund(models.TransientModel):
                     refund.type = 'out_refund'
                 elif inv.type in ['in_invoice','in_refund']:
                     refund.type = 'in_refund'
-                refund._get_available_journal_document_class(tipo_nota.id)
                 created_inv.append(refund.id)
                 refund.update({
                     'turn_issuer': inv.turn_issuer.id,
