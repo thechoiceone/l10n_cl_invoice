@@ -83,7 +83,12 @@ class AccountInvoiceRefund(models.TransientModel):
                 elif inv.type in ['in_invoice','in_refund']:
                     refund.type = 'in_refund'
                 created_inv.append(refund.id)
+                document_type = self.env['account.journal.sii_document_class'].search([
+                    ('sii_document_class_id.sii_code','=', self.tipo_nota.sii_code),
+                    ('journal_id','=', inv.journal_id.id)
+                    ],limit=1)
                 refund.update({
+                    'journal_document_class_id': document_type.id,
                     'turn_issuer': inv.turn_issuer.id,
                     'referencias':[[5,],[0,0, {
                                 'origen': int(inv.sii_document_number or inv.reference),
