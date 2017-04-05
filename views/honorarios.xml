@@ -223,11 +223,12 @@ bh = self.pool.get('ir.model.data').get_object(cr, uid, 'l10n_cl_invoice', 'dc_m
 bhe = self.pool.get('ir.model.data').get_object(cr, uid, 'l10n_cl_invoice', 'dc_m_d_dtn')
 journals_class_o = self.pool.get('account.journal.sii_document_class')
 journal_class =journals_class_o.browse(cr, uid, journals_class_o.search(cr, uid, [
-              ('sii_document_class_id.sii_code', 'in', [bh, bhe]),
+              ('sii_document_class_id.sii_code', 'in', [bh.sii_code, bhe.sii_code]),
               ('journal_id.type', 'in', ['purchase'])]))
 ids = []
 for j in journal_class:
-    ids.append(j.journal_id.id)
+  if not j.journal_id.id in ids:
+      ids.append(j.journal_id.id)
 vista = self.pool.get('ir.model.data').get_object(cr, uid, 'l10n_cl_invoice', 'honorarios_form')
 arbol = self.pool.get('ir.model.data').get_object(cr, uid, 'l10n_cl_invoice', 'honorarios_tree2')
 action = {
