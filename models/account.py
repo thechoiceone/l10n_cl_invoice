@@ -58,7 +58,8 @@ class SiiTax(models.Model):
         # the 'Account' decimal precision + 5), and that way it's like
         # rounding after the sum of the tax amounts of each line
         prec = currency.decimal_places
-        base = round(price_unit * quantity, prec)
+        base = round(price_unit * quantity, prec+2)
+        base = round(base, prec)
         tot_discount = round(base * ((discount or 0.0) /100))
         base -= tot_discount
         total_excluded = base
