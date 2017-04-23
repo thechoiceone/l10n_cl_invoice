@@ -405,6 +405,7 @@ class account_invoice(models.Model):
             default = self.get_document_class_default(document_classes)
         return default
 
+    @api.depends('journal_id')
     @api.onchange('journal_id', 'partner_id', 'turn_issuer', 'invoice_turn')
     def set_default_journal(self, default=None):
         if not self.journal_document_class_id or self.journal_document_class_id.journal_id != self.journal_id:
