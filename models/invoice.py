@@ -109,6 +109,12 @@ class account_invoice(models.Model):
 
     @api.multi
     def finalize_invoice_move_lines(self, move_lines):
+        taxes = self.tax_line_move_line_get()
+        retencion = 0
+        for t in taxes:
+            if t['name'].find('RET - ', 0, 6) > -1:
+                retencion += t['price']
+        retencion = round(retencion)
         dif = 0
         total = self.amount_total
         for line in move_lines:
@@ -163,21 +169,22 @@ class account_invoice(models.Model):
         done_taxes = []
         # loop the invoice.tax.line in reversal sequence
         for tax_line in sorted(self.tax_line_ids, key=lambda x: -x.sequence):
-            if tax_line.amount:
+            amount = tax_line.amount + tax_line.amount_retencion
+            if amount:
                 tax = tax_line.tax_id
                 if tax.amount_type == "group":
                     for child_tax in tax.children_tax_ids:
                         done_taxes.append(child_tax.id)
                 done_taxes.append(tax.id)
-                if (tax_line.amount - tax_line.amount_retencion) > 0:
+                if tax_line.amount  > 0:
                     res.append({
                         'invoice_tax_line_id': tax_line.id,
                         'tax_line_id': tax_line.tax_id.id,
                         'type': 'tax',
                         'name': tax_line.name,
-                        'price_unit': (tax_line.amount - tax_line.amount_retencion),
+                        'price_unit': tax_line.amount,
                         'quantity': 1,
-                        'price': (tax_line.amount - tax_line.amount_retencion),
+                        'price': tax_line.amount,
                         'account_id': tax_line.account_id.id,
                         'account_analytic_id': tax_line.account_analytic_id.id,
                         'invoice_id': self.id,
@@ -188,7 +195,7 @@ class account_invoice(models.Model):
                         'invoice_tax_line_id': tax_line.id,
                         'tax_line_id': tax_line.tax_id.id,
                         'type': 'tax',
-                        'name': tax_line.name,
+                        'name': 'RET - ' + tax_line.name,
                         'price_unit': -tax_line.amount_retencion,
                         'quantity': 1,
                         'price': -tax_line.amount_retencion,
