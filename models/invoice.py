@@ -368,28 +368,19 @@ class account_invoice(models.Model):
             operation_type = self.get_operation_type(invoice_type)
 
             if self.use_documents:
-                letter_ids = self.get_valid_document_letters(
-                    self.partner_id.id,
-                    operation_type,
-                    self.company_id,
-                    self.turn_issuer.vat_affected,
-                    invoice_type,
-                    nd)
-                if letter_ids:
-                    domain = [
-                        ('journal_id', '=', self.journal_id.id),
-                        ('sii_document_class_id.document_letter_id','in', letter_ids.ids),
-                         ]
-                    if invoice_type  in [ 'in_refund', 'out_refund']:
-                        domain += [('sii_document_class_id.document_type','in',['credit_note'] )]
-                    else:
-                        options = ['invoice', 'invoice_in']
-                        if nd:
-                            options.append('debit_note')
-                        domain += [('sii_document_class_id.document_type','in', options )]
-                    document_classes = self.env[
-                        'account.journal.sii_document_class'].search(domain)
-                    document_class_ids = document_classes.ids
+                domain = [
+                    ('journal_id', '=', self.journal_id.id),
+                     ]
+                if invoice_type  in [ 'in_refund', 'out_refund']:
+                    domain += [('sii_document_class_id.document_type','in',['credit_note'] )]
+                else:
+                    options = ['invoice', 'invoice_in']
+                    if nd:
+                        options.append('debit_note')
+                    domain += [('sii_document_class_id.document_type','in', options )]
+                document_classes = self.env[
+                    'account.journal.sii_document_class'].search(domain)
+                document_class_ids = document_classes.ids
                     # If not specific document type found, we choose another one
         return document_class_ids
 
