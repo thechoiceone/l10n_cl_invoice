@@ -407,6 +407,11 @@ class account_invoice(models.Model):
     @api.onchange('journal_id', 'partner_id', 'turn_issuer', 'invoice_turn')
     def set_default_journal(self, default=None):
         if not self.journal_document_class_id or self.journal_document_class_id.journal_id != self.journal_id:
+            if not default:
+                default = self.env['account.journal.sii_document_class'].search([
+                    ('sii_document_class_id','=', self.journal_document_class_id.sii_document_class_id.id),
+                    ('journal_id', '=', self.journal_id.id)
+                    ]).id
             self.journal_document_class_id = self._default_journal_document_class_id(default)
 
 
@@ -660,21 +665,28 @@ a VAT."""))
         return inv
 
     @api.model
+    @api.model
     def _default_journal(self):
         if self._context.get('default_journal_id', False):
             return self.env['account.journal'].browse(self._context.get('default_journal_id'))
+        company_id = self._context.get('company_id', self.company_id or self.env.user.company_id)
         if self._context.get('honorarios', False):
             inv_type = self._context.get('type', 'out_invoice')
             inv_types = inv_type if isinstance(inv_type, list) else [inv_type]
-            company_id = self._context.get('company_id', self.env.user.company_id.id)
             domain = [
                 ('journal_document_class_ids.sii_document_class_id.document_letter_id.name','=','M'),
                 ('type', 'in', filter(None, map(TYPE2JOURNAL.get, inv_types))),
-                ('company_id', '=', company_id),
+                ('company_id', '=', company_id.id),
             ]
             journal_id = self.env['account.journal'].search(domain, limit=1)
             return journal_id
-        return super(account_invoice, self)._default_journal()
+        inv_type = self._context.get('type', 'out_invoice')
+        inv_types = inv_type if isinstance(inv_type, list) else [inv_type]
+        domain = [
+            ('type', 'in', filter(None, map(TYPE2JOURNAL.get, inv_types))),
+            ('company_id', '=', company_id.id),
+        ]
+        return self.env['account.journal'].search(domain, limit=1)
 
 
 class Referencias(models.Model):
