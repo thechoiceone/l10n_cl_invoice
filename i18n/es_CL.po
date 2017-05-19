@@ -4,18 +4,18 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 9.0c-20170219\n"
+"Project-Id-Version: Odoo Server 9.0c-20170207\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-02-20 19:17+0000\n"
-"PO-Revision-Date: 2017-02-20 16:28-0300\n"
-"Last-Translator: Daniel Santibáñez Polanco <dansanti@gmail.com>\n"
+"POT-Creation-Date: 2017-05-19 21:54+0000\n"
+"PO-Revision-Date: 2017-05-19 18:02-0400\n"
+"Last-Translator: Nelson Ramírez <info@konos.cl>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: \n"
-"Language: es\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"Language: es_CL\n"
+"X-Generator: Poedit 1.7.5\n"
 
 #. module: l10n_cl_invoice
 #: model:ir.model.fields,help:l10n_cl_invoice.field_account_journal_document_config_weird_documents
@@ -63,6 +63,11 @@ msgid "Activo Fijo"
 msgstr "Activo Fijo"
 
 #. module: l10n_cl_invoice
+#: model:ir.ui.view,arch_db:l10n_cl_invoice.honorarios_form
+msgid "Additional notes..."
+msgstr "Notas adicionales..."
+
+#. module: l10n_cl_invoice
 #: model:ir.model.fields,field_description:l10n_cl_invoice.field_account_invoice_line_price_tax_included
 msgid "Amount"
 msgstr "Importe"
@@ -83,9 +88,15 @@ msgid "Apply rule"
 msgstr "Aplicar regla"
 
 #. module: l10n_cl_invoice
+#: model:ir.ui.view,arch_db:l10n_cl_invoice.honorarios_form
 #: model:ir.ui.view,arch_db:l10n_cl_invoice.view_supplier_invoice_form
 msgid "Ask Refund"
 msgstr "Pedir reembolso"
+
+#. module: l10n_cl_invoice
+#: model:ir.ui.view,arch_db:l10n_cl_invoice.honorarios_form
+msgid "Auto-detect"
+msgstr "Auto-detección"
 
 #. module: l10n_cl_invoice
 #: model:ir.model.fields,field_description:l10n_cl_invoice.field_account_invoice_available_journal_document_class_ids
@@ -95,12 +106,39 @@ msgstr "Available Journal Document Classes"
 #. module: l10n_cl_invoice
 #: model:ir.model.fields,field_description:l10n_cl_invoice.field_account_invoice_available_journals
 msgid "Available Journals"
-msgstr "Available Journals"
+msgstr "Libros Disponibles"
+
+#. module: l10n_cl_invoice
+#: model:ir.ui.view,arch_db:l10n_cl_invoice.honorarios_form
+msgid "Bill"
+msgstr "Cuenta"
+
+#. module: l10n_cl_invoice
+#: model:ir.ui.view,arch_db:l10n_cl_invoice.honorarios_form
+#: model:ir.ui.view,arch_db:l10n_cl_invoice.honorarios_tree
+msgid "Bill Date"
+msgstr "Fecha factura"
+
+#. module: l10n_cl_invoice
+#: model:ir.ui.view,arch_db:l10n_cl_invoice.honorarios_form
+msgid "Bill lines"
+msgstr "Líneas de factura"
+
+#. module: l10n_cl_invoice
+#: model:ir.actions.act_window,name:l10n_cl_invoice.honorarios_tree2
+#: model:ir.ui.view,arch_db:l10n_cl_invoice.honorarios_form
+msgid "Boletas Honorarios"
+msgstr "Boletas Honorarios"
 
 #. module: l10n_cl_invoice
 #: model:ir.ui.view,arch_db:l10n_cl_invoice.view_account_journal_document_config_form
 msgid "Cancel"
 msgstr "Cancelar"
+
+#. module: l10n_cl_invoice
+#: model:ir.ui.view,arch_db:l10n_cl_invoice.honorarios_form
+msgid "Cancel Bill"
+msgstr "Cancelar Factura"
 
 #. module: l10n_cl_invoice
 #: model:ir.ui.view,arch_db:l10n_cl_invoice.view_account_invoice_notas
@@ -113,16 +151,23 @@ msgid "Canceled?"
 msgstr "¿Cancelada?"
 
 #. module: l10n_cl_invoice
+#: code:addons/bmya/odoo-chile/l10n_cl_invoice/wizard/notas.py:38
 #: code:addons/l10n_cl_invoice/wizard/notas.py:38
 #, python-format
 msgid "Cannot refund draft/proforma/cancelled invoice."
-msgstr "Cannot refund draft/proforma/cancelled invoice."
+msgstr "No se puede hacer devolución de facturas borrador/proforma/cancelada."
 
 #. module: l10n_cl_invoice
+#: code:addons/bmya/odoo-chile/l10n_cl_invoice/wizard/notas.py:40
 #: code:addons/l10n_cl_invoice/wizard/notas.py:40
 #, python-format
 msgid "Cannot refund invoice which is already reconciled, invoice should be unreconciled first. You can only refund this invoice."
 msgstr "No se puede aplicar nota de crédito a una factura reconciliada, la factura debe romper la conciliación primero"
+
+#. module: l10n_cl_invoice
+#: model:ir.actions.act_window,help:l10n_cl_invoice.honorarios_tree2
+msgid "Click to record a new vendor bill."
+msgstr "Pulse para grabar una nueva factura de proveedor."
 
 #. module: l10n_cl_invoice
 #: model:ir.model.fields,field_description:l10n_cl_invoice.field_sii_document_type_code
@@ -153,7 +198,8 @@ msgid "Company"
 msgstr "Compañía"
 
 #. module: l10n_cl_invoice
-#: selection:account.invoice,no_rec_code:0 selection:account.move,no_rec_code:0
+#: selection:account.invoice,no_rec_code:0
+#: selection:account.move,no_rec_code:0
 msgid "Compras destinadas a IVA a generar operaciones no gravados o exentas."
 msgstr "Compras destinadas a IVA a generar operaciones no gravados o exentas."
 
@@ -203,7 +249,11 @@ msgid "Create Journal Documents"
 msgstr "Crear Documentos"
 
 #. module: l10n_cl_invoice
+#: model:ir.model.fields,field_description:l10n_cl_invoice.field_account_invoice_referencias_create_uid
+#: model:ir.model.fields,field_description:l10n_cl_invoice.field_account_journal_document_config_create_uid
+#: model:ir.model.fields,field_description:l10n_cl_invoice.field_account_journal_sii_document_class_create_uid
 #: model:ir.model.fields,field_description:l10n_cl_invoice.field_sii_concept_type_create_uid
+#: model:ir.model.fields,field_description:l10n_cl_invoice.field_sii_document_class_create_uid
 #: model:ir.model.fields,field_description:l10n_cl_invoice.field_sii_document_letter_create_uid
 #: model:ir.model.fields,field_description:l10n_cl_invoice.field_sii_document_type_create_uid
 #: model:ir.model.fields,field_description:l10n_cl_invoice.field_sii_optional_type_create_uid
@@ -214,7 +264,11 @@ msgid "Created by"
 msgstr "Creado por"
 
 #. module: l10n_cl_invoice
+#: model:ir.model.fields,field_description:l10n_cl_invoice.field_account_invoice_referencias_create_date
+#: model:ir.model.fields,field_description:l10n_cl_invoice.field_account_journal_document_config_create_date
+#: model:ir.model.fields,field_description:l10n_cl_invoice.field_account_journal_sii_document_class_create_date
 #: model:ir.model.fields,field_description:l10n_cl_invoice.field_sii_concept_type_create_date
+#: model:ir.model.fields,field_description:l10n_cl_invoice.field_sii_document_class_create_date
 #: model:ir.model.fields,field_description:l10n_cl_invoice.field_sii_document_letter_create_date
 #: model:ir.model.fields,field_description:l10n_cl_invoice.field_sii_document_type_create_date
 #: model:ir.model.fields,field_description:l10n_cl_invoice.field_sii_optional_type_create_date
@@ -325,6 +379,11 @@ msgid "Document Code Prefix"
 msgstr "Prefijo del Documento"
 
 #. module: l10n_cl_invoice
+#: model:ir.model.fields,field_description:l10n_cl_invoice.field_sii_document_class_document_letter_id
+msgid "Document Letter"
+msgstr "Letra del Documento"
+
+#. module: l10n_cl_invoice
 #: model:ir.model.fields,field_description:l10n_cl_invoice.field_account_invoice_document_number
 #: model:ir.model.fields,field_description:l10n_cl_invoice.field_account_invoice_sii_document_number
 #: model:ir.model.fields,field_description:l10n_cl_invoice.field_account_move_document_number
@@ -364,6 +423,11 @@ msgid "Document type"
 msgstr "Tipo de Identificación"
 
 #. module: l10n_cl_invoice
+#: model:ir.model.fields,field_description:l10n_cl_invoice.field_account_invoice_referencias_invoice_id
+msgid "Documento"
+msgstr "Documento"
+
+#. module: l10n_cl_invoice
 #: model:ir.ui.view,arch_db:l10n_cl_invoice.view_account_journal_cl_form
 msgid "Documents"
 msgstr "Documentos"
@@ -379,19 +443,25 @@ msgid "Documents Type"
 msgstr "Tipos de Documentos"
 
 #. module: l10n_cl_invoice
+#: model:ir.ui.view,arch_db:l10n_cl_invoice.honorarios_form
+msgid "Draft Bill"
+msgstr "Factura borrador"
+
+#. module: l10n_cl_invoice
+#: model:ir.ui.view,arch_db:l10n_cl_invoice.honorarios_form
+msgid "Draft Refund"
+msgstr "Borrador de factura rectificativa"
+
+#. module: l10n_cl_invoice
+#: code:addons/bmya/odoo-chile/l10n_cl_invoice/models/partner.py:58
 #: code:addons/l10n_cl_invoice/models/partner.py:58
 #, python-format
 msgid "El usuario %s está utilizando este documento"
 msgstr "El usuario %s está utilizando este documento"
 
 #. module: l10n_cl_invoice
-#: code:addons/l10n_cl_invoice/models/stock_picking.py:604
-#, python-format
-msgid "Entering individual sending..."
-msgstr "Entering individual sending..."
-
-#. module: l10n_cl_invoice
-#: selection:account.invoice,no_rec_code:0 selection:account.move,no_rec_code:0
+#: selection:account.invoice,no_rec_code:0
+#: selection:account.move,no_rec_code:0
 msgid "Entregas gratuitas (premios, bonificaciones, etc.) recibidos."
 msgstr "Entregas gratuitas (premios, bonificaciones, etc.) recibidos."
 
@@ -407,31 +477,8 @@ msgid "Enviado al SII"
 msgstr "Enviado al SII"
 
 #. module: l10n_cl_invoice
-#: code:addons/l10n_cl_invoice/models/stock_picking.py:1312
-#, python-format
-msgid "Error -11"
-msgstr "Error -11"
-
-#. module: l10n_cl_invoice
-#: code:addons/l10n_cl_invoice/models/stock_picking.py:1312
-#, python-format
-msgid "Error -11: Espere a que sea aceptado por el SII, intente en 5s más"
-msgstr "Error -11: Espere a que sea aceptado por el SII, intente en 5s más"
-
-#. module: l10n_cl_invoice
-#: code:addons/l10n_cl_invoice/models/stock_picking.py:1319
-#, python-format
-msgid "Error RCT"
-msgstr "Error RCT"
-
-#. module: l10n_cl_invoice
-#: code:addons/l10n_cl_invoice/models/stock_picking.py:1334
-#, python-format
-msgid "Error code: 2"
-msgstr "Error code: 2"
-
-#. module: l10n_cl_invoice
-#: code:addons/l10n_cl_invoice/models/invoice.py:554
+#: code:addons/bmya/odoo-chile/l10n_cl_invoice/models/invoice.py:567
+#: code:addons/l10n_cl_invoice/models/invoice.py:567
 #, python-format
 msgid "Error!"
 msgstr "¡Error!"
@@ -445,19 +492,7 @@ msgstr "Es No Recuperable"
 #. module: l10n_cl_invoice
 #: model:ir.model.fields,field_description:l10n_cl_invoice.field_account_journal_excempt_documents
 msgid "Excempt Documents Available"
-msgstr "Excempt Documents Available"
-
-#. module: l10n_cl_invoice
-#: code:addons/l10n_cl_invoice/models/stock_picking.py:556
-#, python-format
-msgid "Executing digital signature function"
-msgstr "Executing digital signature function"
-
-#. module: l10n_cl_invoice
-#: code:addons/l10n_cl_invoice/models/stock_picking.py:523
-#, python-format
-msgid "Executing digital signature function in PEM format"
-msgstr "Executing digital signature function in PEM format"
+msgstr "Documentos Exentos Disponibles"
 
 #. module: l10n_cl_invoice
 #: model:ir.model.fields,field_description:l10n_cl_invoice.field_account_move_factor_proporcionalidad
@@ -465,7 +500,8 @@ msgid "Factor proporcionalidad"
 msgstr "Factor proporcionalidad"
 
 #. module: l10n_cl_invoice
-#: selection:account.invoice,no_rec_code:0 selection:account.move,no_rec_code:0
+#: selection:account.invoice,no_rec_code:0
+#: selection:account.move,no_rec_code:0
 msgid "Facturas de proveedores registrados fuera de plazo."
 msgstr "Facturas de proveedores registrados fuera de plazo."
 
@@ -475,18 +511,13 @@ msgid "Fecha Documento"
 msgstr "Fecha Documento"
 
 #. module: l10n_cl_invoice
-#: code:addons/l10n_cl_invoice/models/stock_picking.py:918
-#, python-format
-msgid "Fill Partner VAT"
-msgstr "Debe Llenar el RUT del Asociado"
-
-#. module: l10n_cl_invoice
 #: model:ir.model.fields,field_description:l10n_cl_invoice.field_account_invoice_forma_pago
 msgid "Forma de pago"
 msgstr "Forma de pago"
 
 #. module: l10n_cl_invoice
-#: selection:account.invoice,no_rec_code:0 selection:account.move,no_rec_code:0
+#: selection:account.invoice,no_rec_code:0
+#: selection:account.move,no_rec_code:0
 msgid "Gastos rechazados."
 msgstr "Gastos rechazados."
 
@@ -521,7 +552,17 @@ msgid "Gratuito"
 msgstr "Gratuito"
 
 #. module: l10n_cl_invoice
+#: model:ir.actions.server,name:l10n_cl_invoice.load_honorarios
+#: model:ir.ui.menu,name:l10n_cl_invoice.menu_account_honorarios
+msgid "Honorarios"
+msgstr "Honorarios"
+
+#. module: l10n_cl_invoice
+#: model:ir.model.fields,field_description:l10n_cl_invoice.field_account_invoice_referencias_id
+#: model:ir.model.fields,field_description:l10n_cl_invoice.field_account_journal_document_config_id
+#: model:ir.model.fields,field_description:l10n_cl_invoice.field_account_journal_sii_document_class_id
 #: model:ir.model.fields,field_description:l10n_cl_invoice.field_sii_concept_type_id
+#: model:ir.model.fields,field_description:l10n_cl_invoice.field_sii_document_class_id
 #: model:ir.model.fields,field_description:l10n_cl_invoice.field_sii_document_letter_id
 #: model:ir.model.fields,field_description:l10n_cl_invoice.field_sii_document_type_id
 #: model:ir.model.fields,field_description:l10n_cl_invoice.field_sii_optional_type_id
@@ -529,7 +570,7 @@ msgstr "Gratuito"
 #: model:ir.model.fields,field_description:l10n_cl_invoice.field_sii_responsability_id
 #: model:ir.model.fields,field_description:l10n_cl_invoice.field_sii_sucursal_id
 msgid "ID"
-msgstr "ID"
+msgstr "ID (identificación)"
 
 #. module: l10n_cl_invoice
 #: model:ir.model.fields,help:l10n_cl_invoice.field_sii_document_letter_vat_discriminated
@@ -542,8 +583,10 @@ msgid "Indique a cuál giro de la compañía se asigna esta compra"
 msgstr "Indique a cuál giro de la compañía se asigna esta compra"
 
 #. module: l10n_cl_invoice
-#: code:addons/l10n_cl_invoice/models/invoice.py:248
+#: code:addons/bmya/odoo-chile/l10n_cl_invoice/models/invoice.py:258
+#: code:addons/l10n_cl_invoice/models/invoice.py:258
 #: model:ir.model,name:l10n_cl_invoice.model_account_invoice
+#: model:ir.ui.view,arch_db:l10n_cl_invoice.honorarios_tree
 #, python-format
 msgid "Invoice"
 msgstr "Factura"
@@ -556,7 +599,7 @@ msgstr "Línea factura"
 #. module: l10n_cl_invoice
 #: model:ir.model,name:l10n_cl_invoice.model_account_invoice_refund
 msgid "Invoice Refund"
-msgstr "Nota de Crédito"
+msgstr "Abono factura"
 
 #. module: l10n_cl_invoice
 #: model:ir.model,name:l10n_cl_invoice.model_account_invoice_tax
@@ -569,7 +612,8 @@ msgid "Invoice VAT discrimination default"
 msgstr "IVA Discriminado por defecto"
 
 #. module: l10n_cl_invoice
-#: code:addons/l10n_cl_invoice/wizard/notas.py:100
+#: code:addons/bmya/odoo-chile/l10n_cl_invoice/wizard/notas.py:104
+#: code:addons/l10n_cl_invoice/wizard/notas.py:104
 #, python-format
 msgid "Invoice refund"
 msgstr "Nota de Crédito"
@@ -603,6 +647,7 @@ msgstr "Iva Uso Común"
 
 #. module: l10n_cl_invoice
 #: model:ir.model,name:l10n_cl_invoice.model_account_journal
+#: model:ir.model.fields,field_description:l10n_cl_invoice.field_account_journal_sii_document_class_journal_id
 msgid "Journal"
 msgstr "Diario"
 
@@ -632,7 +677,7 @@ msgstr "Giros del Diario"
 #. module: l10n_cl_invoice
 #: model:ir.model.fields,field_description:l10n_cl_invoice.field_partner_activities_journal_ids
 msgid "Journals"
-msgstr "Libros"
+msgstr "Diarios"
 
 #. module: l10n_cl_invoice
 #: model:ir.model.fields,field_description:l10n_cl_invoice.field_account_invoice_referencias___last_update
@@ -650,7 +695,11 @@ msgid "Last Modified on"
 msgstr "Última modificación en"
 
 #. module: l10n_cl_invoice
+#: model:ir.model.fields,field_description:l10n_cl_invoice.field_account_invoice_referencias_write_uid
+#: model:ir.model.fields,field_description:l10n_cl_invoice.field_account_journal_document_config_write_uid
+#: model:ir.model.fields,field_description:l10n_cl_invoice.field_account_journal_sii_document_class_write_uid
 #: model:ir.model.fields,field_description:l10n_cl_invoice.field_sii_concept_type_write_uid
+#: model:ir.model.fields,field_description:l10n_cl_invoice.field_sii_document_class_write_uid
 #: model:ir.model.fields,field_description:l10n_cl_invoice.field_sii_document_letter_write_uid
 #: model:ir.model.fields,field_description:l10n_cl_invoice.field_sii_document_type_write_uid
 #: model:ir.model.fields,field_description:l10n_cl_invoice.field_sii_optional_type_write_uid
@@ -658,10 +707,14 @@ msgstr "Última modificación en"
 #: model:ir.model.fields,field_description:l10n_cl_invoice.field_sii_responsability_write_uid
 #: model:ir.model.fields,field_description:l10n_cl_invoice.field_sii_sucursal_write_uid
 msgid "Last Updated by"
-msgstr "Ultima actualización por:"
+msgstr "Última actualización de"
 
 #. module: l10n_cl_invoice
+#: model:ir.model.fields,field_description:l10n_cl_invoice.field_account_invoice_referencias_write_date
+#: model:ir.model.fields,field_description:l10n_cl_invoice.field_account_journal_document_config_write_date
+#: model:ir.model.fields,field_description:l10n_cl_invoice.field_account_journal_sii_document_class_write_date
 #: model:ir.model.fields,field_description:l10n_cl_invoice.field_sii_concept_type_write_date
+#: model:ir.model.fields,field_description:l10n_cl_invoice.field_sii_document_class_write_date
 #: model:ir.model.fields,field_description:l10n_cl_invoice.field_sii_document_letter_write_date
 #: model:ir.model.fields,field_description:l10n_cl_invoice.field_sii_document_type_write_date
 #: model:ir.model.fields,field_description:l10n_cl_invoice.field_sii_optional_type_write_date
@@ -669,12 +722,7 @@ msgstr "Ultima actualización por:"
 #: model:ir.model.fields,field_description:l10n_cl_invoice.field_sii_responsability_write_date
 #: model:ir.model.fields,field_description:l10n_cl_invoice.field_sii_sucursal_write_date
 msgid "Last Updated on"
-msgstr "Ultima actualización:"
-
-#. module: l10n_cl_invoice
-#: model:product.template,name:l10n_cl_invoice.no_product
-msgid "Modifica Documento"
-msgstr "Modifica Documento"
+msgstr "Última actualización en"
 
 #. module: l10n_cl_invoice
 #: model:ir.model.fields,field_description:l10n_cl_invoice.field_account_invoice_referencias_motivo
@@ -682,6 +730,7 @@ msgid "Motivo"
 msgstr "Motivo"
 
 #. module: l10n_cl_invoice
+#: model:ir.model.fields,field_description:l10n_cl_invoice.field_account_journal_sii_document_class_name
 #: model:ir.model.fields,field_description:l10n_cl_invoice.field_sii_concept_type_name
 #: model:ir.model.fields,field_description:l10n_cl_invoice.field_sii_document_class_name
 #: model:ir.model.fields,field_description:l10n_cl_invoice.field_sii_document_letter_name
@@ -710,23 +759,17 @@ msgstr "Nombre que será impreso en los reportes, por ejemplo \"Nota de Crédito
 #. module: l10n_cl_invoice
 #: model:ir.model.fields,field_description:l10n_cl_invoice.field_account_invoice_next_invoice_number
 msgid "Next Document Number"
-msgstr "Next Document Number"
+msgstr "Siguiente número de documento"
 
 #. module: l10n_cl_invoice
 #: model:ir.model.fields,help:l10n_cl_invoice.field_account_invoice_next_invoice_number
 msgid "Next number that will be used. This number can be incremented frequently so the displayed value might already be obsolete"
-msgstr "Next number that will be used. This number can be incremented frequently so the displayed value might already be obsolete"
+msgstr "Siguiente número que será ocupado. Este número puede incrementar frecuentemente, así que el valor visualizado puede ser obsoleto."
 
 #. module: l10n_cl_invoice
 #: model:ir.model.fields,field_description:l10n_cl_invoice.field_sii_sucursal_name
 msgid "Nombre de la Sucursal"
 msgstr "Nombre de la Sucursal"
-
-#. module: l10n_cl_invoice
-#: code:addons/l10n_cl_invoice/models/stock_picking.py:600
-#, python-format
-msgid "Not Service provider selected!"
-msgstr "Not Service provider selected!"
 
 #. module: l10n_cl_invoice
 #: model:ir.ui.view,arch_db:l10n_cl_invoice.view_account_invoice_notas
@@ -744,13 +787,15 @@ msgid "Number Must be Unique per Company!"
 msgstr "¡El nombre debe ser único por Compañía!"
 
 #. module: l10n_cl_invoice
-#: code:addons/l10n_cl_invoice/models/invoice.py:634
+#: code:addons/bmya/odoo-chile/l10n_cl_invoice/models/invoice.py:630
+#: code:addons/l10n_cl_invoice/models/invoice.py:630
 #, python-format
 msgid "Operation Type Error"
 msgstr "Error en tipo de Operación"
 
 #. module: l10n_cl_invoice
-#: code:addons/l10n_cl_invoice/models/invoice.py:635
+#: code:addons/bmya/odoo-chile/l10n_cl_invoice/models/invoice.py:631
+#: code:addons/l10n_cl_invoice/models/invoice.py:631
 #, python-format
 msgid "Operation Type Must be \"Sale\" or \"Purchase\""
 msgstr "Operation Type Must be \"Sale\" or \"Purchase\""
@@ -766,12 +811,18 @@ msgid "Other Documents"
 msgstr "Otros Documentos"
 
 #. module: l10n_cl_invoice
+#: model:ir.ui.view,arch_db:l10n_cl_invoice.honorarios_form
+msgid "Other Info"
+msgstr "Otra Información"
+
+#. module: l10n_cl_invoice
 #: model:ir.model.fields,field_description:l10n_cl_invoice.field_account_journal_document_config_other_available
 msgid "Others available?"
 msgstr "¿Otros Disponibles?"
 
 #. module: l10n_cl_invoice
-#: selection:account.invoice,no_rec_code:0 selection:account.move,no_rec_code:0
+#: selection:account.invoice,no_rec_code:0
+#: selection:account.move,no_rec_code:0
 msgid "Otros."
 msgstr "Otros."
 
@@ -782,21 +833,18 @@ msgstr "Secuencia Propia"
 
 #. module: l10n_cl_invoice
 #: model:ir.model,name:l10n_cl_invoice.model_res_partner
-msgid "Partner registered turns"
-msgstr "Partner registered turns"
+msgid "Partner"
+msgstr "Empresa"
 
 #. module: l10n_cl_invoice
-#: model:ir.model.fields,field_description:l10n_cl_invoice.field_account_invoice_paypal_url
-msgid "Paypal Url"
-msgstr "Paypal Url"
-
-#. module: l10n_cl_invoice
-#: code:addons/l10n_cl_invoice/models/invoice.py:554
+#: code:addons/bmya/odoo-chile/l10n_cl_invoice/models/invoice.py:567
+#: code:addons/l10n_cl_invoice/models/invoice.py:567
 #, python-format
 msgid "Please define sequence on the journal related documents to this invoice."
 msgstr "Please define sequence on the journal related documents to this invoice."
 
 #. module: l10n_cl_invoice
+#: code:addons/bmya/odoo-chile/l10n_cl_invoice/wizard/journal_config_wizard.py:71
 #: code:addons/l10n_cl_invoice/wizard/journal_config_wizard.py:71
 #, python-format
 msgid "Please, set your company responsability in the company partner before continue."
@@ -867,7 +915,9 @@ msgid "Referencias"
 msgstr "Referencias"
 
 #. module: l10n_cl_invoice
-#: code:addons/l10n_cl_invoice/models/invoice.py:250
+#: code:addons/bmya/odoo-chile/l10n_cl_invoice/models/invoice.py:260
+#: code:addons/l10n_cl_invoice/models/invoice.py:260
+#: model:ir.ui.view,arch_db:l10n_cl_invoice.honorarios_form
 #, python-format
 msgid "Refund"
 msgstr "Nota de Crédito"
@@ -875,7 +925,7 @@ msgstr "Nota de Crédito"
 #. module: l10n_cl_invoice
 #: model:ir.ui.view,arch_db:l10n_cl_invoice.view_invoice_form
 msgid "Refund Invoice"
-msgstr "Nota de Crédito"
+msgstr "Factura rectificativa"
 
 #. module: l10n_cl_invoice
 #: model:ir.model.fields,field_description:l10n_cl_invoice.field_account_journal_document_config_dte_register
@@ -898,6 +948,11 @@ msgid "Register Manual Documents?"
 msgstr "¿Registra Documentos Tributarios Electrónicos?"
 
 #. module: l10n_cl_invoice
+#: model:ir.ui.view,arch_db:l10n_cl_invoice.honorarios_form
+msgid "Register Payment"
+msgstr "Registrar pago"
+
+#. module: l10n_cl_invoice
 #: model:ir.model.fields,field_description:l10n_cl_invoice.field_account_journal_document_config_settlement_invoice
 msgid "Register Settlement Invoices?"
 msgstr "¿Registra Documentos Tributarios Electrónicos?"
@@ -915,6 +970,11 @@ msgid "Responsability"
 msgstr "Tipo de Contribuyente"
 
 #. module: l10n_cl_invoice
+#: model:ir.ui.view,arch_db:l10n_cl_invoice.honorarios_form
+msgid "Responsible"
+msgstr "Responsable"
+
+#. module: l10n_cl_invoice
 #: model:ir.model.fields,field_description:l10n_cl_invoice.field_account_journal_restore_mode
 msgid "Restore Mode"
 msgstr "Modo Restauración"
@@ -930,18 +990,6 @@ msgstr "Retención"
 #: model:ir.ui.view,arch_db:l10n_cl_invoice.view_currency_form
 msgid "SII"
 msgstr "SII"
-
-#. module: l10n_cl_invoice
-#: code:addons/l10n_cl_invoice/models/stock_picking.py:853
-#, python-format
-msgid "SII Barcode"
-msgstr "SII Barcode"
-
-#. module: l10n_cl_invoice
-#: code:addons/l10n_cl_invoice/models/stock_picking.py:858
-#, python-format
-msgid "SII Barcode Image"
-msgstr "SII Barcode Image"
 
 #. module: l10n_cl_invoice
 #: model:ir.model.fields,field_description:l10n_cl_invoice.field_account_tax_sii_code
@@ -1060,18 +1108,6 @@ msgid "SII optional types"
 msgstr "Tipos Opcionales SII"
 
 #. module: l10n_cl_invoice
-#: code:addons/l10n_cl_invoice/models/stock_picking.py:1319
-#, python-format
-msgid "SII:RESPUESTAGLOSA"
-msgstr "SII:RESPUESTAGLOSA"
-
-#. module: l10n_cl_invoice
-#: code:addons/l10n_cl_invoice/models/stock_picking.py:1334
-#, python-format
-msgid "SII:RESPUESTASII:RESP_HDRGLOSA"
-msgstr "SII:RESPUESTASII:RESP_HDRGLOSA"
-
-#. module: l10n_cl_invoice
 #: model:ir.model,name:l10n_cl_invoice.model_sale_order
 msgid "Sales Order"
 msgstr "Pedido de venta"
@@ -1082,18 +1118,6 @@ msgid "Same Invoice Sequence"
 msgstr "Misma Secuencia que la Factura"
 
 #. module: l10n_cl_invoice
-#: code:addons/l10n_cl_invoice/models/stock_picking.py:610
-#, python-format
-msgid "Seed is:  {}"
-msgstr "Seed is:  {}"
-
-#. module: l10n_cl_invoice
-#: code:addons/l10n_cl_invoice/models/stock_picking.py:1104
-#, python-format
-msgid "Seleccione giro del partner"
-msgstr "Seleccione giro del partner"
-
-#. module: l10n_cl_invoice
 #: model:ir.model.fields,help:l10n_cl_invoice.field_account_journal_journal_activities_ids
 msgid "Select the turns you want to             invoice in this Journal"
 msgstr "Seleccione los giros que Ud desea utilizar con este diario."
@@ -1102,6 +1126,11 @@ msgstr "Seleccione los giros que Ud desea utilizar con este diario."
 #: model:ir.model.fields,field_description:l10n_cl_invoice.field_account_journal_sii_document_class_sequence
 msgid "Sequence"
 msgstr "Secuencia"
+
+#. module: l10n_cl_invoice
+#: model:ir.ui.view,arch_db:l10n_cl_invoice.honorarios_form
+msgid "Set to Draft"
+msgstr "Cambiar a borrador"
 
 #. module: l10n_cl_invoice
 #: model:ir.model,name:l10n_cl_invoice.model_sii_document_letter
@@ -1125,20 +1154,23 @@ msgid "Sucursal"
 msgstr "Sucursal"
 
 #. module: l10n_cl_invoice
-#: code:addons/l10n_cl_invoice/models/invoice.py:249
+#: code:addons/bmya/odoo-chile/l10n_cl_invoice/models/invoice.py:259
+#: code:addons/l10n_cl_invoice/models/invoice.py:259
 #, python-format
 msgid "Supplier Invoice"
 msgstr "Supplier Invoice"
 
 #. module: l10n_cl_invoice
 #: sql_constraint:account.invoice:0
-#: code:addons/l10n_cl_invoice/models/invoice.py:539
+#: code:addons/bmya/odoo-chile/l10n_cl_invoice/models/invoice.py:552
+#: code:addons/l10n_cl_invoice/models/invoice.py:552
 #, python-format
 msgid "Supplier Invoice Number must be unique per Supplier and Company!"
 msgstr "¡El número de factura de proveedor debe ser único por proveedor y por compañía!"
 
 #. module: l10n_cl_invoice
-#: code:addons/l10n_cl_invoice/models/invoice.py:251
+#: code:addons/bmya/odoo-chile/l10n_cl_invoice/models/invoice.py:261
+#: code:addons/l10n_cl_invoice/models/invoice.py:261
 #, python-format
 msgid "Supplier Refund"
 msgstr "Nota de Crédito"
@@ -1151,7 +1183,7 @@ msgstr "Supplier invoice number"
 #. module: l10n_cl_invoice
 #: model:ir.model,name:l10n_cl_invoice.model_account_tax
 msgid "Tax"
-msgstr "Impuestos"
+msgstr "Impuesto"
 
 #. module: l10n_cl_invoice
 #: model:ir.model.fields,field_description:l10n_cl_invoice.field_account_invoice_tax_retencion_account_id
@@ -1166,45 +1198,28 @@ msgid "Tax Payer SII Code"
 msgstr "Código de Contribuyente del SII"
 
 #. module: l10n_cl_invoice
+#: model:ir.ui.view,arch_db:l10n_cl_invoice.honorarios_form
+msgid "Taxes"
+msgstr "Impuestos"
+
+#. module: l10n_cl_invoice
 #: model:ir.model,name:l10n_cl_invoice.model_account_tax_template
 msgid "Templates for Taxes"
 msgstr "Plantilla de impuestos"
 
 #. module: l10n_cl_invoice
-#: code:addons/l10n_cl_invoice/models/stock_picking.py:273
-#, python-format
-msgid "The Document XML file has error: %s"
-msgstr "The Document XML file has error: %s"
-
-#. module: l10n_cl_invoice
-#: code:addons/l10n_cl_invoice/models/stock_picking.py:269
-#, python-format
-msgid "The Document XML file validated correctly: (%s)"
-msgstr "The Document XML file validated correctly: (%s)"
-
-#. module: l10n_cl_invoice
-#: code:addons/l10n_cl_invoice/models/account.py:321
+#: code:addons/bmya/odoo-chile/l10n_cl_invoice/models/account.py:350
+#: code:addons/l10n_cl_invoice/models/account.py:350
 #, python-format
 msgid "The company of the point of sale and of the                 journal must be the same!"
 msgstr "The company of the point of sale and of the                 journal must be the same!"
 
 #. module: l10n_cl_invoice
-#: code:addons/l10n_cl_invoice/models/invoice.py:414
+#: code:addons/bmya/odoo-chile/l10n_cl_invoice/models/invoice.py:424
+#: code:addons/l10n_cl_invoice/models/invoice.py:424
 #, python-format
 msgid "The customer/supplier does not have a VAT defined. The type of invoicing document you selected requires you tu settle a VAT."
 msgstr "The customer/supplier does not have a VAT defined. The type of invoicing document you selected requires you tu settle a VAT."
-
-#. module: l10n_cl_invoice
-#: code:addons/l10n_cl_invoice/models/stock_picking.py:714
-#, python-format
-msgid "There is no CAF file available or in use for this Document. Please enable one."
-msgstr "There is no CAF file available or in use for this Document. Please enable one."
-
-#. module: l10n_cl_invoice
-#: code:addons/l10n_cl_invoice/models/stock_picking.py:996
-#, python-format
-msgid "There is no Signer Person with an             authorized signature for you in the system. Please make sure that             'user_signature_key' module has been installed and enable a digital             signature, for you or make the signer to authorize you to use his             signature."
-msgstr "There is no Signer Person with an             authorized signature for you in the system. Please make sure that             'user_signature_key' module has been installed and enable a digital             signature, for you or make the signer to authorize you to use his             signature."
 
 #. module: l10n_cl_invoice
 #: model:ir.model.fields,help:l10n_cl_invoice.field_account_journal_sii_document_class_sequence_id
@@ -1223,10 +1238,19 @@ msgid "Tipo de impuesto para el SII"
 msgstr "Tipo de impuesto para el SII"
 
 #. module: l10n_cl_invoice
-#: code:addons/l10n_cl_invoice/models/stock_picking.py:616
-#, python-format
-msgid "Token is: {}"
-msgstr "Token is: {}"
+#: model:ir.ui.view,arch_db:l10n_cl_invoice.honorarios_tree
+msgid "To Pay"
+msgstr "A pagar"
+
+#. module: l10n_cl_invoice
+#: model:ir.ui.view,arch_db:l10n_cl_invoice.honorarios_tree
+msgid "To pay"
+msgstr "a pagar"
+
+#. module: l10n_cl_invoice
+#: model:ir.ui.view,arch_db:l10n_cl_invoice.honorarios_tree
+msgid "Total"
+msgstr "Total"
 
 #. module: l10n_cl_invoice
 #: model:ir.model.fields,help:l10n_cl_invoice.field_sii_concept_type_product_types
@@ -1236,6 +1260,7 @@ msgstr ""
 "El tipo debe ser un subgrupo de ajuste, consumible y servicio separado por comas."
 
 #. module: l10n_cl_invoice
+#: model:ir.ui.view,arch_db:l10n_cl_invoice.honorarios_form
 #: model:ir.ui.view,arch_db:l10n_cl_invoice.view_supplier_invoice_form
 msgid "Tratamiento del IVA"
 msgstr "Tratamiento del IVA"
@@ -1292,6 +1317,11 @@ msgid "Uso Común"
 msgstr "Uso Común"
 
 #. module: l10n_cl_invoice
+#: model:ir.ui.view,arch_db:l10n_cl_invoice.honorarios_form
+msgid "Validate"
+msgstr "Validar"
+
+#. module: l10n_cl_invoice
 #: model:ir.model.fields,field_description:l10n_cl_invoice.field_account_tax_retencion
 #: model:ir.model.fields,field_description:l10n_cl_invoice.field_account_tax_template_retencion
 msgid "Valor retención"
@@ -1308,10 +1338,32 @@ msgid "Vat Discriminated on Invoices?"
 msgstr "¿Se discrimina el IVA en las Facturas?"
 
 #. module: l10n_cl_invoice
-#: code:addons/l10n_cl_invoice/models/stock_picking.py:274
-#, python-format
-msgid "XML Malformed Error %s"
-msgstr "XML Malformed Error %s"
+#: model:ir.ui.view,arch_db:l10n_cl_invoice.honorarios_form
+#: model:ir.ui.view,arch_db:l10n_cl_invoice.honorarios_tree
+msgid "Vendor"
+msgstr "Proveedor"
+
+#. module: l10n_cl_invoice
+#: model:ir.ui.view,arch_db:l10n_cl_invoice.honorarios_form
+msgid "Vendor Bill"
+msgstr "Factura del Proveedor"
+
+#. module: l10n_cl_invoice
+#: model:ir.ui.view,arch_db:l10n_cl_invoice.honorarios_form
+msgid "Vendor Reference"
+msgstr "Referencia del Proveedor"
+
+#. module: l10n_cl_invoice
+#: model:ir.model.fields,field_description:l10n_cl_invoice.field_account_invoice_website_message_ids
+#: model:ir.model.fields,field_description:l10n_cl_invoice.field_sale_order_website_message_ids
+msgid "Website Messages"
+msgstr "Mensajes del sitio web"
+
+#. module: l10n_cl_invoice
+#: model:ir.model.fields,help:l10n_cl_invoice.field_account_invoice_website_message_ids
+#: model:ir.model.fields,help:l10n_cl_invoice.field_sale_order_website_message_ids
+msgid "Website communication history"
+msgstr "Historial de comunicaciones del sitio web"
 
 #. module: l10n_cl_invoice
 #: selection:res.company,invoice_vat_discrimination_default:0
@@ -1324,6 +1376,21 @@ msgid "Yes, No Discriminate Default"
 msgstr "Si, NO Discrimina IVA por Defecto"
 
 #. module: l10n_cl_invoice
+#: model:ir.actions.act_window,help:l10n_cl_invoice.honorarios_tree2
+msgid ""
+"You can control the invoice from your vendor according to\n"
+"                what you purchased or received."
+msgstr ""
+"Puede controlar la factura de su proveedor en función de \n"
+"lo que compró o recibió."
+
+#. module: l10n_cl_invoice
+#: model:ir.ui.view,arch_db:l10n_cl_invoice.honorarios_form
+msgid "You have"
+msgstr "Tiene"
+
+#. module: l10n_cl_invoice
+#: code:addons/bmya/odoo-chile/l10n_cl_invoice/models/sii.py:160
 #: code:addons/l10n_cl_invoice/models/sii.py:160
 #, python-format
 msgid "You provided an invalid list of product types.                Must been separated by commas"
@@ -1343,6 +1410,7 @@ msgstr ""
 "                              your supplier/customer."
 
 #. module: l10n_cl_invoice
+#: code:addons/bmya/odoo-chile/l10n_cl_invoice/wizard/journal_config_wizard.py:70
 #: code:addons/l10n_cl_invoice/wizard/journal_config_wizard.py:70
 #, python-format
 msgid "Your company has not setted any responsability"
@@ -1359,9 +1427,19 @@ msgid "account.journal.document_config"
 msgstr "account.journal.document_config"
 
 #. module: l10n_cl_invoice
+#: model:ir.ui.view,arch_db:l10n_cl_invoice.honorarios_form
+msgid "for this supplier. You can allocate them to mark this bill as paid."
+msgstr "para este proveedor. Puede asignarlos para marcar esta factura como pagada."
+
+#. module: l10n_cl_invoice
 #: model:ir.ui.view,arch_db:l10n_cl_invoice.view_account_journal_document_config_form
 msgid "or"
 msgstr "o"
+
+#. module: l10n_cl_invoice
+#: model:ir.ui.view,arch_db:l10n_cl_invoice.honorarios_form
+msgid "outstanding debits"
+msgstr "débitos pendientes"
 
 #. module: l10n_cl_invoice
 #: model:ir.model,name:l10n_cl_invoice.model_sii_sucursal
