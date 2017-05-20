@@ -14,7 +14,7 @@ dc_nc_f_dtn,True,dl_a,60,False,N/C ,credit_note,NOTA DE CREDITO ,Nota de Crédit
 dc_nc_f_dte,True,dl_a,61,True,N/C ,credit_note,NOTA DE CREDITO ,Nota de Crédito Electrónica,NCA
 dc_s_f_dtn,True,dl_s,108,False,REG ,,SOL REGISTRO ,SRF Solicitud de Registro de Factura,SRF
 dc_ftf_f_dtn,True,dl_a,901,False,FAC ,invoice,FACTURA ,Factura de ventas a empresas del territorio preferencial ( Res. Ex. N° 1057,FVA
-dc_din_f_dtn,True,dl_d,914,False,DIN ,,DEC ING ,Declaración de Ingreso (DIN),DIN
+dc_din_f_dtn,True,dl_d,914,False,DIN ,invoice,DEC ING ,Declaración de Ingreso (DIN),DIN
 dc_dizf_f_dtn,True,dl_d,911,False,DIN ,,DEC ING ,Declaración de Ingreso a Zona Franca Primaria,DIN
 dc_ftt_f_dtn,True,dl_a,904,False,FTR ,invoice,FACT TR ,Factura de Traspaso,FTT
 dc_frr_f_dtn,True,dl_a,905,False,FRX ,invoice,FACT RX ,Factura de Reexpedición,FRR
