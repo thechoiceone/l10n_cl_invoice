@@ -97,7 +97,7 @@ class account_invoice(models.Model):
                             line[2]['debit'] += val
                         elif imp.amount > 0:
                             line[2]['credit'] += val
-            if line[2]['name'] == '/':
+            if line[2]['name'] == '/' or line[2]['name'] == self.name:
                 if line[2]['credit'] > 0:
                     line[2]['credit'] = total
                 else:
@@ -118,7 +118,7 @@ class account_invoice(models.Model):
         dif = 0
         total = self.amount_total
         for line in move_lines:
-            if line[2]['name'] == '/':
+            if line[2]['name'] == '/' or line[2]['name'] == self.name:
                 if line[2]['credit'] > 0:
                     dif = total - line[2]['credit']
                 else:
