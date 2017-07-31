@@ -6,28 +6,40 @@ import re
 class res_partner(models.Model):
     _inherit = 'res.partner'
 
-    #def _get_default_tp_type(self):
-    #    return self.env.ref('l10n_cl_invoice.res_IVARI').id
-    # todo: pasar los valores por defecto a un nuevo módulo
-    # por ejemplo "l10n_cl_res_partner_defaults
+    def _get_default_tp_type(self):
+        try:
+            return self.env.ref('l10n_cl_invoice.res_IVARI')
+        except:
+            return
 
-    #def _get_default_doc_type(self):
-    #    return self.env.ref('l10n_cl_invoice.dt_RUT').id
+    def _get_default_doc_type(self):
+        try:
+            return self.env.ref('l10n_cl_invoice.dt_RUT')
+        except:
+            return
 
     responsability_id = fields.Many2one(
-        'sii.responsability', 'Responsability')
-        # dejamos el default pendiente para instalar en otro modulo,
-        # porque da problemas en instalaciones nuevas
-        # 'sii.responsability', 'Responsability', default = _get_default_tp_type)
+        'sii.responsability',
+        string='Responsability',
+        default=lambda self: self._get_default_tp_type(),
+    )
     document_type_id = fields.Many2one(
-        'sii.document_type', 'Document type')
-        # 'sii.document_type', 'Document type', default = _get_default_doc_type)
-    document_number = fields.Char('Document number', size=64)
-
-    start_date = fields.Date('Start-up Date')
-
-    tp_sii_code = fields.Char('Tax Payer SII Code', compute='_get_tp_sii_code',
-        readonly=True)
+        'sii.document_type',
+        string='Document type',
+        default=lambda self: self._get_default_doc_type(),
+    )
+    document_number = fields.Char(
+        string='Document number',
+        size=64,
+    )
+    start_date = fields.Date(
+        string='Start-up Date',
+    )
+    tp_sii_code = fields.Char(
+        'Tax Payer SII Code',
+        compute='_get_tp_sii_code',
+        readonly=True,
+    )
 
     @api.multi
     @api.onchange('responsability_id')
