@@ -10,13 +10,13 @@ class res_partner(models.Model):
         try:
             return self.env.ref('l10n_cl_invoice.res_IVARI')
         except:
-            return
+            return self.env['sii.responsability']
 
     def _get_default_doc_type(self):
         try:
             return self.env.ref('l10n_cl_invoice.dt_RUT')
         except:
-            return
+            return self.env['sii.document_type']
 
     responsability_id = fields.Many2one(
         'sii.responsability',
