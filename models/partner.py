@@ -47,7 +47,6 @@ class res_partner(models.Model):
         for record in self:
             record.tp_sii_code=str(record.responsability_id.tp_sii_code)
 
-
     @api.onchange('document_number', 'document_type_id')
     def onchange_document(self):
         mod_obj = self.env['ir.model.data']
@@ -61,9 +60,16 @@ class res_partner(models.Model):
                 re.sub('[^1234567890Kk]', '', str(
                     self.document_number))).zfill(9).upper()
             vat = 'CL%s' % document_number
-            exist = self.env['res.partner'].search([('vat','=', vat), ('vat', '!=',  'CL555555555')], limit=1)
+            exist = self.env['res.partner'].search(
+                [
+                    ('vat','=', vat),
+                    ('vat', '!=',  'CL555555555'),
+                ],
+                limit=1,
+            )
             if exist:
-                self.vat = self.document_number = ""
+                self.vat = ''
+                self.document_number = ''
                 return {
                     'warning': {
                         'title': "El Rut ya está siendo usado",
@@ -72,11 +78,15 @@ class res_partner(models.Model):
                     }
             self.vat = vat
             self.document_number = '%s.%s.%s-%s' % (
-                document_number[0:2], document_number[2:5],
-                document_number[5:8], document_number[-1])
-
+                                        document_number[0:2], document_number[2:5],
+                                        document_number[5:8], document_number[-1],
+                                    )
         elif self.document_number and (
             'sii.document_type',
             self.document_type_id.id) == mod_obj.get_object_reference(
-                'l10n_cl_invoice', 'dt_Sigd'):
+                'l10n_cl_invoice',
+                'dt_Sigd',
+            ):
             self.document_number = ''
+        else:
+            self.vat = ''
