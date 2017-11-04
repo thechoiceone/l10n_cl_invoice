@@ -352,7 +352,7 @@ class account_invoice(models.Model):
             line.invoice_line_tax_ids = False
             line.invoice_line_tax_ids = tax_ids
 
-def _get_available_journal_document_class(self):
+    def _get_available_journal_document_class(self):
         invoice_type = self.type
         document_class_ids = []
         document_class_id = False
@@ -382,6 +382,7 @@ def _get_available_journal_document_class(self):
                 document_class_ids = document_classes.ids
                     # If not specific document type found, we choose another one
         return document_class_ids
+        
 
     @api.onchange('journal_id',  'turn_issuer', 'invoice_turn')
     def update_domain_journal(self):
