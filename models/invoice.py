@@ -352,7 +352,7 @@ class account_invoice(models.Model):
             line.invoice_line_tax_ids = False
             line.invoice_line_tax_ids = tax_ids
 
-    def _get_available_journal_document_class(self):
+def _get_available_journal_document_class(self):
         invoice_type = self.type
         document_class_ids = []
         document_class_id = False
@@ -411,7 +411,8 @@ class account_invoice(models.Model):
                     ('sii_document_class_id','=', self.journal_document_class_id.sii_document_class_id.id),
                     ('journal_id', '=', self.journal_id.id)
                     ]).id
-            self.journal_document_class_id = self._default_journal_document_class_id(default)
+            if default:
+                self.journal_document_class_id = self._default_journal_document_class_id(default)
 
 
     @api.onchange('sii_document_class_id')
@@ -481,8 +482,9 @@ a VAT."""))
     journal_document_class_id = fields.Many2one(
         'account.journal.sii_document_class',
         'Documents Type',
-        default=_default_journal_document_class_id,
-        domain=_domain_journal_document_class_id,
+        default=_get_available_journal_document_class,
+       # default=_default_journal_document_class_id,
+       # domain=_domain_journal_document_class_id,
         readonly=True,
         store=True,
         states={'draft': [('readonly', False)]})
@@ -584,7 +586,7 @@ a VAT."""))
             obj_inv.move_id.write(guardar)
         return True
 
-    def get_operation_type(self, cr, uid, invoice_type, context=None):
+    def get_operation_type(self, invoice_type):
         if invoice_type in ['in_invoice', 'in_refund']:
             operation_type = 'purchase'
         elif invoice_type in ['out_invoice', 'out_refund']:

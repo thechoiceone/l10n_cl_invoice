@@ -18,9 +18,11 @@
                         domain="[('parent_id', '>=', 1),
                         ('tax_category', '=', tp_sii_code)]"/>
                 </field>
-                 <group name="account_grp">
-                    <field name="invoice_vat_discrimination_default"/>
-                </group>
+                <field name="website" position="after">
+                    <group name="account_grp">
+                        <field name="invoice_vat_discrimination_default"/>
+                     </group>
+                </field>
             </field>
         </record>
 
