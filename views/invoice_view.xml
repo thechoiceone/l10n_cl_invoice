@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
+<odoo>
     <data>
 
         <record id="view_account_invoice_filter" model="ir.ui.view">
@@ -48,6 +48,11 @@
               <button name="invoice_cancel" position="attributes">
                   <attribute name="invisible">1</attribute>
               </button>
+              <field name="invoice_line_tax_ids" position="attributes">
+                <attribute name="required">True</attribute>    
+              </field>
+
+
               <field name="state" position="before">
                 <button name="%(account.action_account_invoice_refund)d" type='action' string='Refund Invoice' groups="base.group_user" attrs="{'invisible': ['|',('type', '=', 'out_invoice'), ('state', 'not in', ('open','proforma2','paid'))]}"/>
               </field>
@@ -153,6 +158,9 @@
               <button name="invoice_cancel" position="attributes">
                   <attribute name="invisible">1</attribute>
               </button>
+              <field name="invoice_line_tax_ids" position="attributes">
+              	<attribute name="required">True</attribute>    
+              </field>
               <field name="state" position="before">
                 <button name="%(account.action_account_invoice_refund)d" type='action' string='Ask Refund' groups="account.group_account_invoice" attrs="{'invisible': ['|',('type', '=', 'in_invoice'),('state','not in',('open','paid'))]}"/>
               </field>
@@ -235,4 +243,4 @@
         </record>
 
     </data>
-</openerp>
+</odoo>
