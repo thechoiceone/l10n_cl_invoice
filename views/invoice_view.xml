@@ -72,9 +72,9 @@
                     <field name="vat_discriminated"/>
                 </field>
 
-                <field name="origin" position="replace">
+               <!-- <field name="origin" position="replace">
                     <field name="origin" attrs="{'readonly':[('state','not in',['draft'])]}" />
-                </field>
+                </field>-->  
 
                 <xpath expr="//page/field[@name='tax_line_ids']/tree/field[@name='account_id']" position="after">
                   <field name="retencion_account_id" />
