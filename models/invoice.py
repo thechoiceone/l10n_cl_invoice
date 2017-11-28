@@ -665,7 +665,6 @@ a VAT."""))
         return inv
 
     @api.model
-    @api.model
     def _default_journal(self):
         if self._context.get('default_journal_id', False):
             return self.env['account.journal'].browse(self._context.get('default_journal_id'))
@@ -686,7 +685,7 @@ a VAT."""))
             ('type', 'in', filter(None, map(TYPE2JOURNAL.get, inv_types))),
             ('company_id', '=', company_id.id),
         ]
-        return self.env['account.journal'].search(domain, limit=1)
+        return self.env['account.journal'].search(domain, limit=1, order="sequence asc")
 
 
 class Referencias(models.Model):
