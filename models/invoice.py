@@ -407,13 +407,22 @@ class account_invoice(models.Model):
     @api.onchange('journal_id', 'partner_id', 'turn_issuer', 'invoice_turn')
     def set_default_journal(self, default=None):
         if not self.journal_document_class_id or self.journal_document_class_id.journal_id != self.journal_id:
-            if not default:
-                default = self.env['account.journal.sii_document_class'].search([
+            query = []
+            if not default and not self.journal_document_class_id:
+                query.append(
                     ('sii_document_class_id','=', self.journal_document_class_id.sii_document_class_id.id),
+                )
+            if self.journal_document_class_id.journal_id != self.journal_id or not default:
+                query.append(
                     ('journal_id', '=', self.journal_id.id)
-                    ]).id
+                )
+            if query:
+                default = self.env['account.journal.sii_document_class'].search(
+                    query,
+                    order='sequence asc',
+                    limit=1,
+                ).id
             self.journal_document_class_id = self._default_journal_document_class_id(default)
-
 
     @api.onchange('sii_document_class_id')
     def _check_vat(self):
