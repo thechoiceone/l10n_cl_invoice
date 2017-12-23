@@ -384,7 +384,7 @@ class account_invoice(models.Model):
                     # If not specific document type found, we choose another one
         return document_class_ids
 
-    @api.onchange('journal_id',  'turn_issuer', 'invoice_turn')
+    @api.onchange('journal_id',  'turn_issuer')
     def update_domain_journal(self):
         document_classes = self._get_available_journal_document_class()
         result = {'domain':{
@@ -404,7 +404,7 @@ class account_invoice(models.Model):
         return default
 
     @api.depends('journal_id')
-    @api.onchange('journal_id', 'partner_id', 'turn_issuer', 'invoice_turn')
+    @api.onchange('journal_id', 'partner_id', 'turn_issuer')
     def set_default_journal(self, default=None):
         if not self.journal_document_class_id or self.journal_document_class_id.journal_id != self.journal_id:
             query = []
