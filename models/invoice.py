@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from odoo import osv, models, fields, api, _
 from odoo.exceptions import except_orm, UserError
+from odoo.osv import osv
 import odoo.addons.decimal_precision as dp
 import logging
 _logger = logging.getLogger(__name__)
